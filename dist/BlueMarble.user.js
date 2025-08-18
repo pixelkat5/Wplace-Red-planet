@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Red Planet
 // @namespace    https://github.com/pixelkat5/
-// @version      0.84.0-2
+// @version      0.84.0-3
 // @description  A userscript to automate and/or enhance the user experience on Wplace.live. Make sure to comply with the site's Terms of Service, and rules! This script is not affiliated with Wplace.live in any way, use at your own risk. This script is not affiliated with TamperMonkey. The author of this userscript is not responsible for any damages, issues, loss of data, or punishment that may occur as a result of using this script. This script is provided "as is" under the MPL-2.0 license. The "Blue Marble" icon is licensed under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication. The image is owned by NASA.
 // @author       SwingTheVine, PixelKat5
 // @license      MPL-2.0
@@ -2313,7 +2313,7 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
   // Modal HTML
   const modal = document.createElement('div');
   modal.id = 'pixel-regen-calc-modal';
-  modal.innerHTML = `
+modal.innerHTML = `
 <div class="drag-handle"></div>
 <div class="body">
   <h3>Pixel Regen Calculator</h3>
@@ -2321,6 +2321,10 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
     Pixels to regain:
     <input type="number" id="pixel-regen-calc-input" min="1" max="10000" step="1" value="100">
   </label>
+  <div style="margin: 8px 0 4px 0; display: flex; align-items: center; gap: 8px;">
+    <input type="checkbox" id="pixel-regen-calc-flag">
+    <label for="pixel-regen-calc-flag">Have a flag.</label>
+  </div>
   <div class="results" id="pixel-regen-calc-results"></div>
   <div class="actions">
     <button id="pixel-regen-calc-close">Close</button>
@@ -2329,31 +2333,45 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
   document.body.appendChild(modal);
 
   // Calculation logic
-  function showResults(pixels) {
-    const seconds = Math.max(0, Number(pixels) * 30);
-    const mins = Math.floor(seconds / 60);
-    const hrs = Math.floor(seconds / 3600);
-    const days = Math.floor(seconds / 86400);
-    const rMins = (seconds/60).toFixed(2);
-    const rHrs = (seconds/3600).toFixed(2);
-    const rDays = (seconds/86400).toFixed(4);
-
-    document.getElementById('pixel-regen-calc-results').innerHTML =
-      pixels > 0
-        ? `<div>
-            <b>Time needed:</b><br>
-            <span>${rMins} minutes<br>
-            ${rHrs} hours<br>
-            ${rDays} days</span>
-           </div>`
-        : '';
+  function showResults(pixels, hasFlag) {
+  pixels = Number(pixels) || 0;
+  if (pixels < 1) pixels = 1;
+  let instant = 0, regen = pixels, remain = pixels;
+  if (hasFlag) {
+    instant = Math.floor(pixels * 0.10);
+    remain = pixels - instant;
+    regen = remain;
   }
-  const inputEl = modal.querySelector('#pixel-regen-calc-input');
-  inputEl.addEventListener('input', () => {
-    let pixels = Number(inputEl.value);
-    if (!pixels || pixels < 1) pixels = 1;
-    showResults(pixels);
-  });
+  const seconds = Math.max(0, regen * 30);
+  const rMins = (seconds/60).toFixed(2);
+  const rHrs = (seconds/3600).toFixed(2);
+  const rDays = (seconds/86400).toFixed(4);
+
+  let html = '';
+  if (hasFlag) {
+    html += `<div>
+      <b>Flag returnal pixels:</b> <span style="color:#ffe082">${instant.toLocaleString()}</span> pixel${instant!==1?'s':''}<br>
+      <b>Remaining pixels spent:</b> ${remain.toLocaleString()} pixel${remain!==1?'s':''}.
+    </div>`;
+  }
+  html += `
+    <div style="margin-top:7px;">
+      <b>Time needed:</b><br>
+      <span>${rMins} minutes<br>
+      ${rHrs} hours<br>
+      ${rDays} days</span>
+    </div>`;
+  document.getElementById('pixel-regen-calc-results').innerHTML = html;
+}
+const inputEl = modal.querySelector('#pixel-regen-calc-input');
+const flagEl = modal.querySelector('#pixel-regen-calc-flag');
+function updateCalc() {
+  let pixels = Number(inputEl.value);
+  if (!pixels || pixels < 1) pixels = 1;
+  showResults(pixels, flagEl && flagEl.checked);
+}
+inputEl.addEventListener('input', updateCalc);
+if(flagEl) flagEl.addEventListener('change', updateCalc);
 
   // Show/hide logic
   modal.querySelector('#pixel-regen-calc-close').onclick = ()=> { modal.style.display='none'; };
@@ -2460,5 +2478,7 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
   }, { passive: false });
   document.addEventListener("touchend", stopDrag);
   document.addEventListener("touchcancel", stopDrag);
+
+
 })();
 })();
