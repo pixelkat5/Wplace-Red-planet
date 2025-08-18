@@ -5,8 +5,8 @@
 // @description  A userscript to automate and/or enhance the user experience on Wplace.live. Make sure to comply with the site's Terms of Service, and rules! This script is not affiliated with Wplace.live in any way, use at your own risk. This script is not affiliated with TamperMonkey. The author of this userscript is not responsible for any damages, issues, loss of data, or punishment that may occur as a result of using this script. This script is provided "as is" under the MPL-2.0 license. The "Blue Marble" icon is licensed under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication. The image is owned by NASA.
 // @author       SwingTheVine, PixelKat5
 // @license      MPL-2.0
-// @supportURL   https://discord.gg/DG6QkqQgbN
-// @homepageURL  
+// @supportURL   https://discord.gg/tpeBPy46hf
+// @homepageURL  https://bluemarble.camilledaguin.fr/
 // @icon         https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/favicon.png
 // @updateURL    https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/Red-planet.user.js
 // @downloadURL  https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/Red-planet.user.js
@@ -2271,5 +2271,194 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
 })();
+// Pixel Regen Calculator
+(function() {
+  // Styles
+  const calcCSS = `
+#pixel-regen-calc-modal {
+  position: fixed; right: 120px; top: 120px; z-index: 2147483647;
+  min-width: 300px; max-width: 90vw; background: #3c1e24; color: #fff;
+  border-radius: 9px; box-shadow: 0 8px 32px #2a1113cc; font: 14px/1.5 Roboto Mono, monospace;
+  border: none; padding: 0; display: none; flex-direction: column;
+  will-change: transform;
+}
+#pixel-regen-calc-modal .drag-handle {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><circle cx="3" cy="3" r="1.5" fill="indianred" /></svg>') repeat;
+  cursor: grab; width: 100%; height: 1.2em; border-radius: 9px 9px 0 0;
+  margin-bottom: 0.5em;
+}
+#pixel-regen-calc-modal.dragging .drag-handle { cursor: grabbing; }
+#pixel-regen-calc-modal .body { padding: 16px 18px 18px 18px; }
+#pixel-regen-calc-modal h3 { margin: 0 0 14px 0; font-size: 17px; }
+#pixel-regen-calc-modal input[type="number"] {
+  width: 90px; padding: 6px 8px; border-radius: 6px;
+  border: 1px solid #a23a2b; background: #5e2d2a;
+  color: #fff; font: 15px monospace; margin-right: 12px;
+}
+#pixel-regen-calc-modal input[type="number"]:focus { outline: 1px solid #d85c38;}
+#pixel-regen-calc-modal .results { margin-top: 10px; color: #e4bfbf; }
+#pixel-regen-calc-modal .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px;}
+#pixel-regen-calc-modal button {
+  border: none; padding: 6px 14px; border-radius: 7px;
+  background: #a23a2b; color: #fff; font: 14px monospace; cursor: pointer;
+  transition: background 0.18s;
+}
+#pixel-regen-calc-modal button:hover { background: #d85c38; }
+#pixel-regen-calc-modal button:active { background: #c14429; }
+`;
+  const styleTag = document.createElement('style');
+  styleTag.textContent = calcCSS;
+  document.head.appendChild(styleTag);
 
+  // Modal HTML
+  const modal = document.createElement('div');
+  modal.id = 'pixel-regen-calc-modal';
+  modal.innerHTML = `
+<div class="drag-handle"></div>
+<div class="body">
+  <h3>Pixel Regen Calculator</h3>
+  <label>
+    Pixels to regain:
+    <input type="number" id="pixel-regen-calc-input" min="1" max="10000" step="1" value="100">
+  </label>
+  <div class="results" id="pixel-regen-calc-results"></div>
+  <div class="actions">
+    <button id="pixel-regen-calc-close">Close</button>
+  </div>
+</div>`;
+  document.body.appendChild(modal);
+
+  // Calculation logic
+  function showResults(pixels) {
+    const seconds = Math.max(0, Number(pixels) * 30);
+    const mins = Math.floor(seconds / 60);
+    const hrs = Math.floor(seconds / 3600);
+    const days = Math.floor(seconds / 86400);
+    const rMins = (seconds/60).toFixed(2);
+    const rHrs = (seconds/3600).toFixed(2);
+    const rDays = (seconds/86400).toFixed(4);
+
+    document.getElementById('pixel-regen-calc-results').innerHTML =
+      pixels > 0
+        ? `<div>
+            <b>Time needed:</b><br>
+            <span>${rMins} minutes<br>
+            ${rHrs} hours<br>
+            ${rDays} days</span>
+           </div>`
+        : '';
+  }
+  const inputEl = modal.querySelector('#pixel-regen-calc-input');
+  inputEl.addEventListener('input', () => {
+    let pixels = Number(inputEl.value);
+    if (!pixels || pixels < 1) pixels = 1;
+    showResults(pixels);
+  });
+
+  // Show/hide logic
+  modal.querySelector('#pixel-regen-calc-close').onclick = ()=> { modal.style.display='none'; };
+  function openCalc() {
+    modal.style.display = 'flex';
+    inputEl.focus();
+    showResults(inputEl.value);
+  }
+
+  // Add button to Blue Marble window
+  function addButton() {
+    // Attach after "bm-wrench" or "bm-search"
+    let refBtn = document.querySelector('#bm-search') || document.querySelector('#bm-wrench');
+    if (!refBtn) return setTimeout(addButton, 500);
+    let parent = refBtn.parentElement;
+    if (!parent) return;
+    if (document.getElementById('bm-regen-calc')) return;
+
+    const btn = document.createElement('button');
+    btn.id = 'bm-regen-calc';
+    btn.className = "bm-D";
+    btn.title = "Open Pixel Regen Calculator";
+    btn.style.marginLeft = "2px";
+    btn.innerHTML = "⏳";
+    btn.addEventListener('click', openCalc);
+    parent.insertBefore(btn, refBtn.nextSibling);
+  }
+  setTimeout(addButton, 800);
+
+  // Drag logic
+  const dragHandle = modal.querySelector('.drag-handle');
+  let isDragging = false, dragOriginX = 0, dragOriginY = 0, dragOffsetX = 0, dragOffsetY = 0, animationId = 0;
+  function getTransformXY(el) {
+    const computed = window.getComputedStyle(el).transform;
+    if (computed && computed !== 'none') {
+      const matrix = new DOMMatrix(computed);
+      return [matrix.m41, matrix.m42];
+    }
+    return [0, 0];
+  }
+  function animate() {
+    if (isDragging) {
+      modal.style.transform = `translate(${dragOffsetX}px, ${dragOffsetY}px)`;
+      animationId = requestAnimationFrame(animate);
+    }
+  }
+  function startDrag(clientX, clientY) {
+    isDragging = true;
+    modal.classList.add('dragging');
+    const rect = modal.getBoundingClientRect();
+    let [curX, curY] = getTransformXY(modal);
+    dragOriginX = clientX - rect.left;
+    dragOriginY = clientY - rect.top;
+    modal.style.left = "0px";
+    modal.style.top = "0px";
+    modal.style.right = "auto";
+    modal.style.bottom = "auto";
+    modal.style.position = "fixed";
+    if (curX === 0 && curY === 0) {
+      dragOffsetX = rect.left;
+      dragOffsetY = rect.top;
+      modal.style.transform = `translate(${dragOffsetX}px, ${dragOffsetY}px)`;
+    } else {
+      dragOffsetX = curX;
+      dragOffsetY = curY;
+    }
+    document.body.style.userSelect = "none";
+    if (animationId) cancelAnimationFrame(animationId);
+    animate();
+  }
+  function stopDrag() {
+    isDragging = false;
+    if (animationId) cancelAnimationFrame(animationId);
+    document.body.style.userSelect = "";
+    modal.classList.remove('dragging');
+  }
+  function doDrag(clientX, clientY) {
+    if (!isDragging) return;
+    dragOffsetX = clientX - dragOriginX;
+    dragOffsetY = clientY - dragOriginY;
+  }
+  dragHandle.addEventListener("mousedown", function(e) {
+    e.preventDefault();
+    startDrag(e.clientX, e.clientY);
+  });
+  document.addEventListener("mousemove", function(e) {
+    if (isDragging) doDrag(e.clientX, e.clientY);
+  }, { passive: true });
+  document.addEventListener("mouseup", stopDrag);
+  dragHandle.addEventListener("touchstart", function(e) {
+    const touch = e?.touches?.[0];
+    if (touch) {
+      startDrag(touch.clientX, touch.clientY);
+      e.preventDefault();
+    }
+  }, { passive: false });
+  document.addEventListener("touchmove", function(e) {
+    if (isDragging) {
+      const touch = e?.touches?.[0];
+      if (!touch) return;
+      doDrag(touch.clientX, touch.clientY);
+      e.preventDefault();
+    }
+  }, { passive: false });
+  document.addEventListener("touchend", stopDrag);
+  document.addEventListener("touchcancel", stopDrag);
+})();
 })();
