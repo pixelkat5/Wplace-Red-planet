@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Red Planet
 // @namespace    https://github.com/pixelkat5/
-// @version      0.84.0-1
+// @version      0.84.0-2
 // @description  A userscript to automate and/or enhance the user experience on Wplace.live. Make sure to comply with the site's Terms of Service, and rules! This script is not affiliated with Wplace.live in any way, use at your own risk. This script is not affiliated with TamperMonkey. The author of this userscript is not responsible for any damages, issues, loss of data, or punishment that may occur as a result of using this script. This script is provided "as is" under the MPL-2.0 license. The "Blue Marble" icon is licensed under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication. The image is owned by NASA.
 // @author       SwingTheVine, PixelKat5
 // @license      MPL-2.0
-// @supportURL   https://discord.gg/tpeBPy46hf
-// @homepageURL  https://bluemarble.camilledaguin.fr/
+// @supportURL   https://discord.gg/DG6QkqQgbN
+// @homepageURL  
 // @icon         https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/favicon.png
 // @updateURL    https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/Red-planet.user.js
 // @downloadURL  https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/Red-planet.user.js
@@ -17,6 +17,7 @@
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
 // @connect      telemetry.thebluecorner.net
+// @connect      nominatim.openstreetmap.org
 // @resource     CSS-BM-File https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/8d02ac9cbe8f6861248152f2b0d632a0b4a830ee/dist/BlueMarble.user.css
 // ==/UserScript==
 
@@ -921,6 +922,98 @@ const redThemeCSS = `
 
 GM_addStyle(redThemeCSS);
 
+// Add Search Window CSS
+const searchWindowCSS = `
+#mars-search-draggable {
+  position: fixed; right: 75px; top: 440px; z-index: 2147483646;
+  width: min(420px,90vw); max-height: 500px;
+  background: #3c1e24; color: #fff; border-radius: 10px;
+  box-shadow: 0 8px 32px #2a1113cc;
+  font: 14px/1.4 Roboto Mono, monospace, Arial;
+  display: none;
+  border: none;
+  flex-direction: column;
+  min-width: 300px;
+  will-change: transform;
+}
+#mars-search-draggable .drag-handle {
+  margin-bottom: 0.5em;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><circle cx="3" cy="3" r="1.5" fill="indianred" /></svg>') repeat;
+  cursor: grab;
+  width: 100%;
+  height: 1.2em;
+  border-radius: 4px 4px 0 0;
+}
+#mars-search-draggable.dragging .drag-handle {
+  cursor: grabbing;
+}
+#mars-search-draggable .hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px 0 14px;
+}
+#mars-search-draggable .hdr h3 {
+  margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.07em;
+  display: flex; align-items: center; gap: 0.5em;
+}
+#mars-search-draggable .hdr .actions {
+  display: flex; gap: 10px;
+}
+#mars-search-draggable .hdr button {
+  border: none; padding: 6px 10px; border-radius: 7px;
+  background: #a23a2b; color: #fff; font: 14px monospace;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+#mars-search-draggable .hdr button:hover { background: #d85c38; }
+#mars-search-draggable .hdr button:active { background: #c14429; }
+#mars-search-draggable .body {
+  padding: 10px 14px; overflow: hidden;
+}
+#mars-search-input {
+  width: 100%; padding: 8px 12px; border-radius: 6px;
+  border: 1px solid #a23a2b; background: #5e2d2a;
+  color: #fff; font: 14px monospace;
+  margin-bottom: 10px;
+}
+#mars-search-input:focus { outline: 1px solid #d85c38;}
+#mars-search-input::placeholder { color: #e4bfbf80; }
+#mars-search-results {
+  max-height: 320px; overflow-y: auto;
+}
+.mars-search-result {
+  padding: 10px; cursor: pointer;
+  border-bottom: 1px solid #5e2d2a;
+  transition: background-color 0.2s;
+}
+.mars-search-result:hover {
+  background-color: #5e2d2a;
+}
+.mars-search-result:last-child {
+  border-bottom: none;
+}
+.mars-result-name {
+  font-size: 14px;
+  color: #e4bfbf;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.mars-result-address {
+  font-size: 12px;
+  color: #e4bfbf80;
+}
+.mars-loading, .mars-no-results {
+  padding: 20px;
+  text-align: center;
+  color: #e4bfbf80;
+  font-size: 14px;
+}
+.mars-icon {
+  display: inline-block; height: 2em; margin-right: 1ch; vertical-align: middle;
+}
+`;
+
+GM_addStyle(searchWindowCSS);
+
 var x = document.createElement("link");
 x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap", x.rel = "preload", x.as = "style", x.onload = function() {
     this.onload = null, this.rel = "stylesheet"
@@ -1278,7 +1371,215 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
         }).h().$({
             textContent: 'You can disable telemetry by pressing the "Disable" button below.'
         }).h().h().h().p(document.body)
-    }! function() {
+    }
+
+    // Add Search Functionality
+    function createSearchWindow() {
+        const searchPanel = document.createElement('div');
+        searchPanel.id = 'mars-search-draggable';
+        searchPanel.innerHTML = `
+<div class="drag-handle"></div>
+<div class="hdr">
+  <h3>
+    <img class="mars-icon" src="https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/favicon.png" alt="Mars">
+    Location Search
+  </h3>
+  <div class="actions">
+    <button id="mars-search-close">Close</button>
+  </div>
+</div>
+<div class="body">
+  <input type="text" id="mars-search-input" placeholder="Search for a place...">
+  <div id="mars-search-results"></div>
+</div>`;
+        document.body.appendChild(searchPanel);
+
+        // Close logic
+        searchPanel.querySelector('#mars-search-close').addEventListener('click', () => searchPanel.style.display = 'none');
+
+        // Drag logic
+        const dragHandle = searchPanel.querySelector('.drag-handle');
+        let isDragging = false, dragOriginX = 0, dragOriginY = 0, dragOffsetX = 0, dragOffsetY = 0, animationId = 0;
+
+        function getTransformXY(el) {
+            const computed = window.getComputedStyle(el).transform;
+            if (computed && computed !== 'none') {
+                const matrix = new DOMMatrix(computed);
+                return [matrix.m41, matrix.m42];
+            }
+            return [0, 0];
+        }
+
+        function animate() {
+            if (isDragging) {
+                searchPanel.style.transform = `translate(${dragOffsetX}px, ${dragOffsetY}px)`;
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        function startDrag(clientX, clientY) {
+            isDragging = true;
+            searchPanel.classList.add('dragging');
+            const rect = searchPanel.getBoundingClientRect();
+            let [curX, curY] = getTransformXY(searchPanel);
+            dragOriginX = clientX - rect.left;
+            dragOriginY = clientY - rect.top;
+            searchPanel.style.left = "0px";
+            searchPanel.style.top = "0px";
+            searchPanel.style.right = "auto";
+            searchPanel.style.bottom = "auto";
+            searchPanel.style.position = "fixed";
+            if (curX === 0 && curY === 0) {
+                dragOffsetX = rect.left;
+                dragOffsetY = rect.top;
+                searchPanel.style.transform = `translate(${dragOffsetX}px, ${dragOffsetY}px)`;
+            } else {
+                dragOffsetX = curX;
+                dragOffsetY = curY;
+            }
+            document.body.style.userSelect = "none";
+            if (animationId) cancelAnimationFrame(animationId);
+            animate();
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            if (animationId) cancelAnimationFrame(animationId);
+            document.body.style.userSelect = "";
+            searchPanel.classList.remove('dragging');
+        }
+
+        function doDrag(clientX, clientY) {
+            if (!isDragging) return;
+            dragOffsetX = clientX - dragOriginX;
+            dragOffsetY = clientY - dragOriginY;
+        }
+
+        dragHandle.addEventListener("mousedown", function(e) {
+            e.preventDefault();
+            startDrag(e.clientX, e.clientY);
+        });
+
+        document.addEventListener("mousemove", function(e) {
+            if (isDragging) doDrag(e.clientX, e.clientY);
+        }, { passive: true });
+
+        document.addEventListener("mouseup", stopDrag);
+
+        dragHandle.addEventListener("touchstart", function(e) {
+            const touch = e?.touches?.[0];
+            if (touch) {
+                startDrag(touch.clientX, touch.clientY);
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener("touchmove", function(e) {
+            if (isDragging) {
+                const touch = e?.touches?.[0];
+                if (!touch) return;
+                doDrag(touch.clientX, touch.clientY);
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener("touchend", stopDrag);
+        document.addEventListener("touchcancel", stopDrag);
+
+        // Search functionality
+        const searchInput = searchPanel.querySelector('#mars-search-input');
+        const resultsContainer = searchPanel.querySelector('#mars-search-results');
+
+        function searchLocation(query) {
+            return new Promise((resolve, reject) => {
+                GM_xmlhttpRequest({
+                    method: 'GET',
+                    url: `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`,
+                    headers: {
+                        'User-Agent': 'RedPlanet-Search-UserScript/1.0'
+                    },
+                    onload: function(response) {
+                        try {
+                            const data = JSON.parse(response.responseText);
+                            resolve(data);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    },
+                    onerror: function(error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+        function navigateToLocation(lat, lon) {
+            const zoom = 14.62;
+            const url = `https://wplace.live/?lat=${lat}&lng=${lon}&zoom=${zoom}`;
+            window.location.href = url;
+        }
+
+        function displayResults(results) {
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="mars-no-results">No results found</div>';
+                return;
+            }
+
+            resultsContainer.innerHTML = '';
+            results.forEach(result => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'mars-search-result';
+
+                const displayName = result.display_name || 'Unknown location';
+                const nameParts = displayName.split(',');
+                const primaryName = nameParts[0];
+                const address = nameParts.slice(1).join(',').trim();
+
+                resultItem.innerHTML = `
+                    <div class="mars-result-name">${primaryName}</div>
+                    ${address ? `<div class="mars-result-address">${address}</div>` : ''}
+                `;
+
+                resultItem.addEventListener('click', () => {
+                    navigateToLocation(result.lat, result.lon);
+                    searchPanel.style.display = 'none';
+                    searchInput.value = '';
+                    resultsContainer.innerHTML = '';
+                });
+
+                resultsContainer.appendChild(resultItem);
+            });
+        }
+
+        async function handleSearch() {
+            const query = searchInput.value.trim();
+            if (!query) return;
+
+            resultsContainer.innerHTML = '<div class="mars-loading">Searching...</div>';
+
+            try {
+                const results = await searchLocation(query);
+                displayResults(results);
+            } catch (error) {
+                console.error('Search error:', error);
+                resultsContainer.innerHTML = '<div class="mars-no-results">Error searching. Please try again.</div>';
+            }
+        }
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(handleSearch, 500); // Debounce search
+        });
+    }
+
+! function() {
         let t = !1,
             e = {};
         try {
@@ -1514,6 +1815,18 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
                     panel.style.display = panel.style.display === 'none' || !panel.style.display ? 'flex' : 'none';
                 }
             })
+        }).h().k({
+            id: "bm-search",
+            className: "bm-D",
+            innerHTML: "🔍",
+            title: "Open Location Search"
+        }, (t, e) => {
+            e.addEventListener("click", () => {
+                const searchPanel = document.getElementById('mars-search-draggable');
+                if (searchPanel) {
+                    searchPanel.style.display = searchPanel.style.display === 'none' || !searchPanel.style.display ? 'flex' : 'none';
+                }
+            })
         }).h().h().S({
             textContent: "Made by SwingTheVine, Pixel",
             style: "margin-top: auto;"
@@ -1562,7 +1875,12 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
                 }
             } catch (t) {}
         }, 0)
-    }(), $.W("#bm-A", "#bm-z"), M.Xt($), new MutationObserver((t, e) => {
+    }(), $.W("#bm-A", "#bm-z"), M.Xt($),
+
+    // Initialize search window
+    createSearchWindow();
+
+    new MutationObserver((t, e) => {
             const n = document.querySelector("#color-1");
             if (!n) return;
             let i = document.querySelector("#bm-t");
@@ -1581,34 +1899,9 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
         }),
         function(...t) {
             (0, console.log)(...t)
-        }(`%c${w}%c (${y}) userscript has loaded!`, "color: cornflowerblue;", "")
-})();
+        }(`%c${w}%c (${y}) userscript has loaded!`, "color: cornflowerblue;", "");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Mars Keybind System
 (function() {
   'use strict';
 
@@ -1720,6 +2013,7 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
   function isTyping(el){
     if(!el) return false;
     if(el.closest('#mars-keybinder-draggable')) return true; // typing in panel
+    if(el.closest('#mars-search-draggable')) return true; // typing in search panel
     const t = el.tagName?.toLowerCase();
     return t==='input'||t==='textarea'||el.isContentEditable;
   }
@@ -1962,6 +2256,8 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
     marsCSS();
     buildDraggablePanel();
     scanSwatches();
+    // Expose scanSwatches globally
+    window.scanSwatches = scanSwatches;
     window.addEventListener('keydown', onKeyDown,{capture:true});
     window.addEventListener('mousedown', onMouseDown,{capture:true});
     const mo = new MutationObserver(()=>{
@@ -1974,4 +2270,6 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
+})();
+
 })();
