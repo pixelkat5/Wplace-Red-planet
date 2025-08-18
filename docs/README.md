@@ -39,7 +39,6 @@
 
 <h1>Red Planet</h1>
 <a href="https://discord.gg/DG6QkqQgbN" target="_blank" rel="noopener noreferrer"><img alt="Contact Me" src="https://img.shields.io/badge/Contact_Me-gray?style=flat&logo=Discord&logoColor=white&logoSize=auto&labelColor=cornflowerblue"></a>
-<a href="https://bluemarble.camilledaguin.fr/" target="_blank" rel="noopener noreferrer"><img alt="Red Planet Website" src="https://img.shields.io/badge/Blue_Marble_Website-Camille_Daguin-blue?style=flat&logo=globe&logoColor=white"></a>
 <a href="" target="_blank" rel="noopener noreferrer"><img alt="WakaTime" src="https://img.shields.io/badge/Coding_Time-111hrs_12mins-blue?style=flat&logo=wakatime&logoColor=black&logoSize=auto&labelColor=white"></a>
 <a href="" target="_blank" rel="noopener noreferrer"><img alt="Total Patches" src="https://img.shields.io/badge/Total_Patches-494-black?style=flat"></a>
 <a href="" target="_blank" rel="noopener noreferrer"><img alt="Total Lines of Code" src="https://tokei.rs/b1/github/SwingTheVine/Wplace-BlueMarble?category=code"></a>
@@ -93,12 +92,6 @@
       <b>I want to report a vulnerability.</b> <sup>(Click to Expand)</sup>
     </summary>
     <a href="https://github.com/SwingTheVine/Wplace-BlueMarble/security">Click here</a> to submit a vulnerability report.
-  </details>
-  <details>
-    <summary>
-      <b>I want to visit the website.</b> <sup>(Click to Expand)</sup>
-    </summary>
-    <a href="https://bluemarble.camilledaguin.fr/" target="_blank" rel="noopener noreferrer">Click here</a> to visit the official Red Planet website.
   </details>
 </p>
 
