@@ -298,180 +298,50 @@ function buildOverlayMain() {
            * @param {Event} event - The click event object (implicit)
            */
           img.addEventListener('click', () => {
-            isMinimized = !isMinimized; // Toggle the current state
+            isMinimized = !isMinimized;
 
             const overlay = document.querySelector('#bm-overlay');
-            const header = document.querySelector('#bm-contain-header');
-            const dragBar = document.querySelector('#bm-bar-drag');
-            const coordsContainer = document.querySelector('#bm-contain-coords');
-            const coordsButton = document.querySelector('#bm-button-coords');
-            const createButton = document.querySelector('#bm-button-create');
-            const enableButton = document.querySelector('#bm-button-enable');
-            const disableButton = document.querySelector('#bm-button-disable');
-            const coordInputs = document.querySelectorAll('#bm-contain-coords input');
-            
-            // Pre-restore original dimensions when switching to maximized state
-            // This ensures smooth transition and prevents layout issues
-            if (!isMinimized) {
-              overlay.style.width = "auto";
-              overlay.style.maxWidth = "300px";
-              overlay.style.minWidth = "200px";
-              overlay.style.padding = "10px";
-            }
-            
-            // Define elements that should be hidden/shown during state transitions
-            // Each element is documented with its purpose for maintainability
-            const elementsToToggle = [
-              '#bm-overlay h1',                    // Main title "Blue Marble"
-              '#bm-contain-userinfo',              // User information section (username, droplets, level)
-              '#bm-overlay hr',                    // Visual separator lines
-              '#bm-contain-automation > *:not(#bm-contain-coords)', // Automation section excluding coordinates
-              '#bm-input-file-template',           // Template file upload interface
-              '#bm-contain-buttons-action',        // Action buttons container
-              `#${instance.outputStatusId}`,       // Status log textarea for user feedback
-              '#bm-contain-colorfilter'            // Color filter UI
+            const elementsToHide = [
+              '#bm-overlay h1', '#bm-contain-userinfo', '#bm-overlay hr',
+              '#bm-contain-automation > *:not(#bm-contain-coords)',
+              '#bm-input-file-template', '#bm-contain-buttons-action',
+              `#${instance.outputStatusId}`, '#bm-contain-colorfilter'
             ];
-            
-            // Apply visibility changes to all toggleable elements
-            elementsToToggle.forEach(selector => {
-              const elements = document.querySelectorAll(selector);
-              elements.forEach(element => {
-                element.style.display = isMinimized ? 'none' : '';
+
+            // Toggle visibility of main elements
+            elementsToHide.forEach(selector => {
+              document.querySelectorAll(selector).forEach(el => {
+                el.style.display = isMinimized ? 'none' : '';
               });
             });
-            // Handle coordinate container and button visibility based on state
+
+            // Toggle coordinate controls
+            const coordElements = ['#bm-contain-coords', '#bm-button-coords', '#bm-button-create', '#bm-button-enable', '#bm-button-disable'];
+            coordElements.forEach(selector => {
+              const el = document.querySelector(selector);
+              if (el) el.style.display = isMinimized ? 'none' : '';
+            });
+
+            // Apply layout styles
             if (isMinimized) {
-              // ==================== MINIMIZED STATE CONFIGURATION ====================
-              // In minimized state, we hide ALL interactive elements except the icon and drag bar
-              // This creates a clean, unobtrusive interface that maintains only essential functionality
-              
-              // Hide coordinate input container completely
-              if (coordsContainer) {
-                coordsContainer.style.display = 'none';
-              }
-              
-              // Hide coordinate button (pin icon)
-              if (coordsButton) {
-                coordsButton.style.display = 'none';
-              }
-              
-              // Hide create template button
-              if (createButton) {
-                createButton.style.display = 'none';
-              }
-
-              // Hide enable templates button
-              if (enableButton) {
-                enableButton.style.display = 'none';
-              }
-
-              // Hide disable templates button
-              if (disableButton) {
-                disableButton.style.display = 'none';
-              }
-              
-              // Hide all coordinate input fields individually (failsafe)
-              coordInputs.forEach(input => {
-                input.style.display = 'none';
+              Object.assign(overlay.style, {
+                width: '60px', height: '76px', maxWidth: '60px', minWidth: '60px', padding: '8px'
               });
-              
-              // Apply fixed dimensions for consistent minimized appearance
-              // These dimensions were chosen to accommodate the icon while remaining compact
-              overlay.style.width = '60px';    // Fixed width for consistency
-              overlay.style.height = '76px';   // Fixed height (60px + 16px for better proportions)
-              overlay.style.maxWidth = '60px';  // Prevent expansion
-              overlay.style.minWidth = '60px';  // Prevent shrinking
-              overlay.style.padding = '8px';    // Comfortable padding around icon
-              
-              // Apply icon positioning for better visual centering in minimized state
-              // The 3px offset compensates for visual weight distribution
               img.style.marginLeft = '3px';
-              
-              // Configure header layout for minimized state
-              header.style.textAlign = 'center';
-              header.style.margin = '0';
-              header.style.marginBottom = '0';
-              
-              // Ensure drag bar remains visible and properly spaced
-              if (dragBar) {
-                dragBar.style.display = '';
-                dragBar.style.marginBottom = '0.25em';
-              }
+              const header = document.querySelector('#bm-contain-header');
+              if (header) Object.assign(header.style, { textAlign: 'center', margin: '0', marginBottom: '0' });
             } else {
-              // ==================== MAXIMIZED STATE RESTORATION ====================
-              // In maximized state, we restore all elements to their default functionality
-              // This involves clearing all style overrides applied during minimization
-              
-              // Restore coordinate container to default state
-              if (coordsContainer) {
-                coordsContainer.style.display = '';           // Show container
-                coordsContainer.style.flexDirection = '';     // Reset flex layout
-                coordsContainer.style.justifyContent = '';    // Reset alignment
-                coordsContainer.style.alignItems = '';        // Reset alignment
-                coordsContainer.style.gap = '';               // Reset spacing
-                coordsContainer.style.textAlign = '';         // Reset text alignment
-                coordsContainer.style.margin = '';            // Reset margins
-              }
-              
-              // Restore coordinate button visibility
-              if (coordsButton) {
-                coordsButton.style.display = '';
-              }
-              
-              // Restore create button visibility and reset positioning
-              if (createButton) {
-                createButton.style.display = '';
-                createButton.style.marginTop = '';
-              }
-
-              // Restore enable button visibility and reset positioning
-              if (enableButton) {
-                enableButton.style.display = '';
-                enableButton.style.marginTop = '';
-              }
-
-              // Restore disable button visibility and reset positioning
-              if (disableButton) {
-                disableButton.style.display = '';
-                disableButton.style.marginTop = '';
-              }
-              
-              // Restore all coordinate input fields
-              coordInputs.forEach(input => {
-                input.style.display = '';
+              Object.assign(overlay.style, {
+                width: '', height: '', maxWidth: '', minWidth: '', padding: '10px'
               });
-              
-              // Reset icon positioning to default (remove minimized state offset)
               img.style.marginLeft = '';
-              
-              // Restore overlay to responsive dimensions
-              overlay.style.padding = '10px';
-              
-              // Reset header styling to defaults
-              header.style.textAlign = '';
-              header.style.margin = '';
-              header.style.marginBottom = '';
-              
-              // Reset drag bar spacing
-              if (dragBar) {
-                dragBar.style.marginBottom = '0.5em';
-              }
-              
-              // Remove all fixed dimensions to allow responsive behavior
-              // This ensures the overlay can adapt to content changes
-              overlay.style.width = '';
-              overlay.style.height = '';
+              const header = document.querySelector('#bm-contain-header');
+              if (header) Object.assign(header.style, { textAlign: '', margin: '', marginBottom: '' });
             }
-            
-            // ==================== ACCESSIBILITY AND USER FEEDBACK ====================
-            // Update accessibility information for screen readers and tooltips
-            
-            // Update alt text to reflect current state for screen readers and tooltips
+
             img.alt = isMinimized ? 
               'Blue Marble Icon - Minimized (Click to maximize)' : 
               'Blue Marble Icon - Maximized (Click to minimize)';
-            
-            // No status message needed - state change is visually obvious to users
           });
         }
       ).buildElement()
