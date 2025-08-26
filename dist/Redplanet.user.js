@@ -2,7 +2,7 @@
 // @name         Red Planet
 // @namespace    https://github.com/pixelkat5/
 // @version      0.84.0-3
-// @description  A userscript to automate and/or enhance the user experience on Wplace.live. Make sure to comply with the site's Terms of Service, and rules! This script is not affiliated with Wplace.live in any way, use at your own risk. This script is not affiliated with TamperMonkey. The author of this userscript is not responsible for any damages, issues, loss of data, or punishment that may occur as a result of using this script. This script is provided "as is" under the MPL-2.0 license. The "Blue Marble" icon is licensed under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication. The image is owned by NASA.
+// @description  A userscript to automate and enhance Wplace.live. Use at your own risk.
 // @author       SwingTheVine, PixelKat5
 // @license      MPL-2.0
 // @supportURL   https://discord.gg/tpeBPy46hf
@@ -208,327 +208,8 @@
         for (const [t, e] of Object.entries(n)) i[t] = e;
         return i
     };
-    var c, u, d, h, b, p, g = [{
-            id: 0,
-            premium: !1,
-            name: "Transparent",
-            rgb: [0, 0, 0]
-        }, {
-            id: 1,
-            premium: !1,
-            name: "Black",
-            rgb: [0, 0, 0]
-        }, {
-            id: 2,
-            premium: !1,
-            name: "Dark Gray",
-            rgb: [60, 60, 60]
-        }, {
-            id: 3,
-            premium: !1,
-            name: "Gray",
-            rgb: [120, 120, 120]
-        }, {
-            id: 4,
-            premium: !1,
-            name: "Light Gray",
-            rgb: [210, 210, 210]
-        }, {
-            id: 5,
-            premium: !1,
-            name: "White",
-            rgb: [255, 255, 255]
-        }, {
-            id: 6,
-            premium: !1,
-            name: "Deep Red",
-            rgb: [96, 0, 24]
-        }, {
-            id: 7,
-            premium: !1,
-            name: "Red",
-            rgb: [237, 28, 36]
-        }, {
-            id: 8,
-            premium: !1,
-            name: "Orange",
-            rgb: [255, 127, 39]
-        }, {
-            id: 9,
-            premium: !1,
-            name: "Gold",
-            rgb: [246, 170, 9]
-        }, {
-            id: 10,
-            premium: !1,
-            name: "Yellow",
-            rgb: [249, 221, 59]
-        }, {
-            id: 11,
-            premium: !1,
-            name: "Light Yellow",
-            rgb: [255, 250, 188]
-        }, {
-            id: 12,
-            premium: !1,
-            name: "Dark Green",
-            rgb: [14, 185, 104]
-        }, {
-            id: 13,
-            premium: !1,
-            name: "Green",
-            rgb: [19, 230, 123]
-        }, {
-            id: 14,
-            premium: !1,
-            name: "Light Green",
-            rgb: [135, 255, 94]
-        }, {
-            id: 15,
-            premium: !1,
-            name: "Dark Teal",
-            rgb: [12, 129, 110]
-        }, {
-            id: 16,
-            premium: !1,
-            name: "Teal",
-            rgb: [16, 174, 166]
-        }, {
-            id: 17,
-            premium: !1,
-            name: "Light Teal",
-            rgb: [19, 225, 190]
-        }, {
-            id: 18,
-            premium: !1,
-            name: "Dark Blue",
-            rgb: [40, 80, 158]
-        }, {
-            id: 19,
-            premium: !1,
-            name: "Blue",
-            rgb: [64, 147, 228]
-        }, {
-            id: 20,
-            premium: !1,
-            name: "Cyan",
-            rgb: [96, 247, 242]
-        }, {
-            id: 21,
-            premium: !1,
-            name: "Indigo",
-            rgb: [107, 80, 246]
-        }, {
-            id: 22,
-            premium: !1,
-            name: "Light Indigo",
-            rgb: [153, 177, 251]
-        }, {
-            id: 23,
-            premium: !1,
-            name: "Dark Purple",
-            rgb: [120, 12, 153]
-        }, {
-            id: 24,
-            premium: !1,
-            name: "Purple",
-            rgb: [170, 56, 185]
-        }, {
-            id: 25,
-            premium: !1,
-            name: "Light Purple",
-            rgb: [224, 159, 249]
-        }, {
-            id: 26,
-            premium: !1,
-            name: "Dark Pink",
-            rgb: [203, 0, 122]
-        }, {
-            id: 27,
-            premium: !1,
-            name: "Pink",
-            rgb: [236, 31, 128]
-        }, {
-            id: 28,
-            premium: !1,
-            name: "Light Pink",
-            rgb: [243, 141, 169]
-        }, {
-            id: 29,
-            premium: !1,
-            name: "Dark Brown",
-            rgb: [104, 70, 52]
-        }, {
-            id: 30,
-            premium: !1,
-            name: "Brown",
-            rgb: [149, 104, 42]
-        }, {
-            id: 31,
-            premium: !1,
-            name: "Beige",
-            rgb: [248, 178, 119]
-        }, {
-            id: 32,
-            premium: !0,
-            name: "Medium Gray",
-            rgb: [170, 170, 170]
-        }, {
-            id: 33,
-            premium: !0,
-            name: "Dark Red",
-            rgb: [165, 14, 30]
-        }, {
-            id: 34,
-            premium: !0,
-            name: "Light Red",
-            rgb: [250, 128, 114]
-        }, {
-            id: 35,
-            premium: !0,
-            name: "Dark Orange",
-            rgb: [228, 92, 26]
-        }, {
-            id: 36,
-            premium: !0,
-            name: "Light Tan",
-            rgb: [214, 181, 148]
-        }, {
-            id: 37,
-            premium: !0,
-            name: "Dark Goldenrod",
-            rgb: [156, 132, 49]
-        }, {
-            id: 38,
-            premium: !0,
-            name: "Goldenrod",
-            rgb: [197, 173, 49]
-        }, {
-            id: 39,
-            premium: !0,
-            name: "Light Goldenrod",
-            rgb: [232, 212, 95]
-        }, {
-            id: 40,
-            premium: !0,
-            name: "Dark Olive",
-            rgb: [74, 107, 58]
-        }, {
-            id: 41,
-            premium: !0,
-            name: "Olive",
-            rgb: [90, 148, 74]
-        }, {
-            id: 42,
-            premium: !0,
-            name: "Light Olive",
-            rgb: [132, 197, 115]
-        }, {
-            id: 43,
-            premium: !0,
-            name: "Dark Cyan",
-            rgb: [15, 121, 159]
-        }, {
-            id: 44,
-            premium: !0,
-            name: "Light Cyan",
-            rgb: [187, 250, 242]
-        }, {
-            id: 45,
-            premium: !0,
-            name: "Light Blue",
-            rgb: [125, 199, 255]
-        }, {
-            id: 46,
-            premium: !0,
-            name: "Dark Indigo",
-            rgb: [77, 49, 184]
-        }, {
-            id: 47,
-            premium: !0,
-            name: "Dark Slate Blue",
-            rgb: [74, 66, 132]
-        }, {
-            id: 48,
-            premium: !0,
-            name: "Slate Blue",
-            rgb: [122, 113, 196]
-        }, {
-            id: 49,
-            premium: !0,
-            name: "Light Slate Blue",
-            rgb: [181, 174, 241]
-        }, {
-            id: 50,
-            premium: !0,
-            name: "Light Brown",
-            rgb: [219, 164, 99]
-        }, {
-            id: 51,
-            premium: !0,
-            name: "Dark Beige",
-            rgb: [209, 128, 81]
-        }, {
-            id: 52,
-            premium: !0,
-            name: "Light Beige",
-            rgb: [255, 197, 165]
-        }, {
-            id: 53,
-            premium: !0,
-            name: "Dark Peach",
-            rgb: [155, 82, 73]
-        }, {
-            id: 54,
-            premium: !0,
-            name: "Peach",
-            rgb: [209, 128, 120]
-        }, {
-            id: 55,
-            premium: !0,
-            name: "Light Peach",
-            rgb: [250, 182, 164]
-        }, {
-            id: 56,
-            premium: !0,
-            name: "Dark Tan",
-            rgb: [123, 99, 82]
-        }, {
-            id: 57,
-            premium: !0,
-            name: "Tan",
-            rgb: [156, 132, 107]
-        }, {
-            id: 58,
-            premium: !0,
-            name: "Dark Slate",
-            rgb: [51, 57, 65]
-        }, {
-            id: 59,
-            premium: !0,
-            name: "Slate",
-            rgb: [109, 117, 141]
-        }, {
-            id: 60,
-            premium: !0,
-            name: "Light Slate",
-            rgb: [179, 185, 209]
-        }, {
-            id: 61,
-            premium: !0,
-            name: "Dark Stone",
-            rgb: [109, 100, 63]
-        }, {
-            id: 62,
-            premium: !0,
-            name: "Stone",
-            rgb: [148, 140, 107]
-        }, {
-            id: 63,
-            premium: !0,
-            name: "Light Stone",
-            rgb: [205, 197, 158]
-        }],
+    var c, u, d, h, b, p, g = [
+        {id:0,premium:!1,name:"Transparent",rgb:[0,0,0]},{id:1,premium:!1,name:"Black",rgb:[0,0,0]},{id:2,premium:!1,name:"Dark Gray",rgb:[60,60,60]},{id:3,premium:!1,name:"Gray",rgb:[120,120,120]},{id:4,premium:!1,name:"Light Gray",rgb:[210,210,210]},{id:5,premium:!1,name:"White",rgb:[255,255,255]},{id:6,premium:!1,name:"Deep Red",rgb:[96,0,24]},{id:7,premium:!1,name:"Red",rgb:[237,28,36]},{id:8,premium:!1,name:"Orange",rgb:[255,127,39]},{id:9,premium:!1,name:"Gold",rgb:[246,170,9]},{id:10,premium:!1,name:"Yellow",rgb:[249,221,59]},{id:11,premium:!1,name:"Light Yellow",rgb:[255,250,188]},{id:12,premium:!1,name:"Dark Green",rgb:[14,185,104]},{id:13,premium:!1,name:"Green",rgb:[19,230,123]},{id:14,premium:!1,name:"Light Green",rgb:[135,255,94]},{id:15,premium:!1,name:"Dark Teal",rgb:[12,129,110]},{id:16,premium:!1,name:"Teal",rgb:[16,174,166]},{id:17,premium:!1,name:"Light Teal",rgb:[19,225,190]},{id:18,premium:!1,name:"Dark Blue",rgb:[40,80,158]},{id:19,premium:!1,name:"Blue",rgb:[64,147,228]},{id:20,premium:!1,name:"Cyan",rgb:[96,247,242]},{id:21,premium:!1,name:"Indigo",rgb:[107,80,246]},{id:22,premium:!1,name:"Light Indigo",rgb:[153,177,251]},{id:23,premium:!1,name:"Dark Purple",rgb:[120,12,153]},{id:24,premium:!1,name:"Purple",rgb:[170,56,185]},{id:25,premium:!1,name:"Light Purple",rgb:[224,159,249]},{id:26,premium:!1,name:"Dark Pink",rgb:[203,0,122]},{id:27,premium:!1,name:"Pink",rgb:[236,31,128]},{id:28,premium:!1,name:"Light Pink",rgb:[243,141,169]},{id:29,premium:!1,name:"Dark Brown",rgb:[104,70,52]},{id:30,premium:!1,name:"Brown",rgb:[149,104,42]},{id:31,premium:!1,name:"Beige",rgb:[248,178,119]},{id:32,premium:!0,name:"Medium Gray",rgb:[170,170,170]},{id:33,premium:!0,name:"Dark Red",rgb:[165,14,30]},{id:34,premium:!0,name:"Light Red",rgb:[250,128,114]},{id:35,premium:!0,name:"Dark Orange",rgb:[228,92,26]},{id:36,premium:!0,name:"Light Tan",rgb:[214,181,148]},{id:37,premium:!0,name:"Dark Goldenrod",rgb:[156,132,49]},{id:38,premium:!0,name:"Goldenrod",rgb:[197,173,49]},{id:39,premium:!0,name:"Light Goldenrod",rgb:[232,212,95]},{id:40,premium:!0,name:"Dark Olive",rgb:[74,107,58]},{id:41,premium:!0,name:"Olive",rgb:[90,148,74]},{id:42,premium:!0,name:"Light Olive",rgb:[132,197,115]},{id:43,premium:!0,name:"Dark Cyan",rgb:[15,121,159]},{id:44,premium:!0,name:"Light Cyan",rgb:[187,250,242]},{id:45,premium:!0,name:"Light Blue",rgb:[125,199,255]},{id:46,premium:!0,name:"Dark Indigo",rgb:[77,49,184]},{id:47,premium:!0,name:"Dark Slate Blue",rgb:[74,66,132]},{id:48,premium:!0,name:"Slate Blue",rgb:[122,113,196]},{id:49,premium:!0,name:"Light Slate Blue",rgb:[181,174,241]},{id:50,premium:!0,name:"Light Brown",rgb:[219,164,99]},{id:51,premium:!0,name:"Dark Beige",rgb:[209,128,81]},{id:52,premium:!0,name:"Light Beige",rgb:[255,197,165]},{id:53,premium:!0,name:"Dark Peach",rgb:[155,82,73]},{id:54,premium:!0,name:"Peach",rgb:[209,128,120]},{id:55,premium:!0,name:"Light Peach",rgb:[250,182,164]},{id:56,premium:!0,name:"Dark Tan",rgb:[123,99,82]},{id:57,premium:!0,name:"Tan",rgb:[156,132,107]},{id:58,premium:!0,name:"Dark Slate",rgb:[51,57,65]},{id:59,premium:!0,name:"Slate",rgb:[109,117,141]},{id:60,premium:!0,name:"Light Slate",rgb:[179,185,209]},{id:61,premium:!0,name:"Dark Stone",rgb:[109,100,63]},{id:62,premium:!0,name:"Stone",rgb:[148,140,107]},{id:63,premium:!0,name:"Light Stone",rgb:[205,197,158]}],
         f = class {
             constructor({
                 displayName: t = "My template",
@@ -791,225 +472,53 @@ GM_addStyle(v);
 
 // Override main window colors to match wrench menu red theme
 const redThemeCSS = `
-#bm-A {
-  background: #3c1e24 !important;
-  border: 2px solid #5e2d2a !important;
-  color: #fff !important;
-  box-shadow: 0 8px 32px #2a1113cc !important;
-}
-
-#bm-A h1 {
-  color: #e4bfbf !important;
-}
-
-#bm-A hr {
-  border-color: #5e2d2a !important;
-}
-
-#bm-A button.bm-D {
-  background: #a23a2b !important;
-  color: #fff !important;
-  border: 1px solid #5e2d2a !important;
-  transition: background 0.18s !important;
-}
-
-#bm-A button.bm-D:hover {
-  background: #d85c38 !important;
-}
-
-#bm-A button.bm-D:active {
-  background: #c14429 !important;
-}
-
-#bm-A input[type="number"] {
-  background: #5e2d2a !important;
-  color: #fff !important;
-  border: 1px solid #a23a2b !important;
-}
-
-#bm-A input[type="number"]:focus {
-  outline: 1px solid #d85c38 !important;
-}
-
-#bm-A textarea {
-  background: #5e2d2a !important;
-  color: #fff !important;
-  border: 1px solid #a23a2b !important;
-}
-
-#bm-A small {
-  color: #e4bfbf !important;
-}
-
-#bm-A p {
-  color: #e4bfbf !important;
-}
-
-#bm-A label {
-  color: #e4bfbf !important;
-}
-
-#bm-A div[style*="border"] {
-  border-color: #5e2d2a !important;
-}
-
-#bm-A input[type="checkbox"] {
-  accent-color: #a23a2b !important;
-}
-
-#bm-A input[type="file"] {
-  background: #5e2d2a !important;
-  color: #fff !important;
-  border: 1px solid #a23a2b !important;
-}
-
-#bm-A input[type="file"]:hover {
-  background: #d85c38 !important;
-}
-
-/* Target specific buttons that don't use bm-D class */
-#bm-A #bm-3, /* Enable All */
-#bm-A #bm-0, /* Disable All */
-#bm-A #bm-s, /* Enable */
-#bm-A #bm-r, /* Create */
-#bm-A #bm-l, /* Disable */
-#bm-A #bm-a button, /* Upload Template button */
-#bm-A button:not(.bm-D) { /* Any other buttons not using bm-D class */
-  background: #a23a2b !important;
-  color: #fff !important;
-  border: 1px solid #5e2d2a !important;
-  transition: background 0.18s !important;
-}
-
-#bm-A #bm-3:hover, /* Enable All */
-#bm-A #bm-0:hover, /* Disable All */
-#bm-A #bm-s:hover, /* Enable */
-#bm-A #bm-r:hover, /* Create */
-#bm-A #bm-l:hover, /* Disable */
-#bm-A #bm-a button:hover, /* Upload Template button */
-#bm-A button:not(.bm-D):hover { /* Any other buttons not using bm-D class */
-  background: #d85c38 !important;
-}
-
-#bm-A #bm-3:active, /* Enable All */
-#bm-A #bm-0:active, /* Disable All */
-#bm-A #bm-s:active, /* Enable */
-#bm-A #bm-r:active, /* Create */
-#bm-A #bm-l:active, /* Disable */
-#bm-A #bm-a button:active, /* Upload Template button */
-#bm-A button:not(.bm-D):active { /* Any other buttons not using bm-D class */
-  background: #c14429 !important;
-}
-
-/* Style the main window drag handle to match wrench window */
-#bm-z {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><circle cx="3" cy="3" r="1.5" fill="indianred" /></svg>') repeat !important;
-  cursor: grab !important;
-  width: 100% !important;
-  height: 1.2em !important;
-  border-radius: 4px 4px 0 0 !important;
-  margin-bottom: 0.5em !important;
-}
-
-#bm-z:hover {
-  cursor: grab !important;
-}
-
-#bm-z:active {
-  cursor: grabbing !important;
-}
+#bm-A{background:#3c1e24!important;border:2px solid #5e2d2a!important;color:#fff!important;box-shadow:0 8px 32px #2a1113cc!important}
+#bm-A h1{color:#e4bfbf!important}
+#bm-A hr{border-color:#5e2d2a!important}
+#bm-A button.bm-D{background:#a23a2b!important;color:#fff!important;border:1px solid #5e2d2a!important;transition:background 0.18s!important}
+#bm-A button.bm-D:hover{background:#d85c38!important}
+#bm-A button.bm-D:active{background:#c14429!important}
+#bm-A input[type="number"]{background:#5e2d2a!important;color:#fff!important;border:1px solid #a23a2b!important}
+#bm-A input[type="number"]:focus{outline:1px solid #d85c38!important}
+#bm-A textarea{background:#5e2d2a!important;color:#fff!important;border:1px solid #a23a2b!important}
+#bm-A small,#bm-A p,#bm-A label{color:#e4bfbf!important}
+#bm-A div[style*="border"]{border-color:#5e2d2a!important}
+#bm-A input[type="checkbox"]{accent-color:#a23a2b!important}
+#bm-A input[type="file"]{background:#5e2d2a!important;color:#fff!important;border:1px solid #a23a2b!important}
+#bm-A input[type="file"]:hover{background:#d85c38!important}
+#bm-A #bm-3,#bm-A #bm-0,#bm-A #bm-s,#bm-A #bm-r,#bm-A #bm-l,#bm-A #bm-a button,#bm-A button:not(.bm-D){background:#a23a2b!important;color:#fff!important;border:1px solid #5e2d2a!important;transition:background 0.18s!important}
+#bm-A #bm-3:hover,#bm-A #bm-0:hover,#bm-A #bm-s:hover,#bm-A #bm-r:hover,#bm-A #bm-l:hover,#bm-A #bm-a button:hover,#bm-A button:not(.bm-D):hover{background:#d85c38!important}
+#bm-A #bm-3:active,#bm-A #bm-0:active,#bm-A #bm-s:active,#bm-A #bm-r:active,#bm-A #bm-l:active,#bm-A #bm-a button:active,#bm-A button:not(.bm-D):active{background:#c14429!important}
+#bm-z{background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><circle cx="3" cy="3" r="1.5" fill="indianred"/></svg>') repeat!important;cursor:grab!important;width:100%!important;height:1.2em!important;border-radius:4px 4px 0 0!important;margin-bottom:0.5em!important}
+#bm-z:hover{cursor:grab!important}
+#bm-z:active{cursor:grabbing!important}
 `;
 
 GM_addStyle(redThemeCSS);
 
 // Add Search Window CSS
 const searchWindowCSS = `
-#mars-search-draggable {
-  position: fixed; right: 75px; top: 440px; z-index: 2147483646;
-  width: min(420px,90vw); max-height: 500px;
-  background: #3c1e24; color: #fff; border-radius: 10px;
-  box-shadow: 0 8px 32px #2a1113cc;
-  font: 14px/1.4 Roboto Mono, monospace, Arial;
-  display: none;
-  border: none;
-  flex-direction: column;
-  min-width: 300px;
-  will-change: transform;
-}
-#mars-search-draggable .drag-handle {
-  margin-bottom: 0.5em;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><circle cx="3" cy="3" r="1.5" fill="indianred" /></svg>') repeat;
-  cursor: grab;
-  width: 100%;
-  height: 1.2em;
-  border-radius: 4px 4px 0 0;
-}
-#mars-search-draggable.dragging .drag-handle {
-  cursor: grabbing;
-}
-#mars-search-draggable .hdr {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px 0 14px;
-}
-#mars-search-draggable .hdr h3 {
-  margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.07em;
-  display: flex; align-items: center; gap: 0.5em;
-}
-#mars-search-draggable .hdr .actions {
-  display: flex; gap: 10px;
-}
-#mars-search-draggable .hdr button {
-  border: none; padding: 6px 10px; border-radius: 7px;
-  background: #a23a2b; color: #fff; font: 14px monospace;
-  cursor: pointer;
-  transition: background 0.18s;
-}
-#mars-search-draggable .hdr button:hover { background: #d85c38; }
-#mars-search-draggable .hdr button:active { background: #c14429; }
-#mars-search-draggable .body {
-  padding: 10px 14px; overflow: hidden;
-}
-#mars-search-input {
-  width: 100%; padding: 8px 12px; border-radius: 6px;
-  border: 1px solid #a23a2b; background: #5e2d2a;
-  color: #fff; font: 14px monospace;
-  margin-bottom: 10px;
-}
-#mars-search-input:focus { outline: 1px solid #d85c38;}
-#mars-search-input::placeholder { color: #e4bfbf80; }
-#mars-search-results {
-  max-height: 320px; overflow-y: auto;
-}
-.mars-search-result {
-  padding: 10px; cursor: pointer;
-  border-bottom: 1px solid #5e2d2a;
-  transition: background-color 0.2s;
-}
-.mars-search-result:hover {
-  background-color: #5e2d2a;
-}
-.mars-search-result:last-child {
-  border-bottom: none;
-}
-.mars-result-name {
-  font-size: 14px;
-  color: #e4bfbf;
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-.mars-result-address {
-  font-size: 12px;
-  color: #e4bfbf80;
-}
-.mars-loading, .mars-no-results {
-  padding: 20px;
-  text-align: center;
-  color: #e4bfbf80;
-  font-size: 14px;
-}
-.mars-icon {
-  display: inline-block; height: 2em; margin-right: 1ch; vertical-align: middle;
-}
+#mars-search-draggable{position:fixed;right:75px;top:440px;z-index:2147483646;width:min(420px,90vw);max-height:500px;background:#3c1e24;color:#fff;border-radius:10px;box-shadow:0 8px 32px #2a1113cc;font:14px/1.4 Roboto Mono,monospace,Arial;display:none;border:none;flex-direction:column;min-width:300px;will-change:transform}
+#mars-search-draggable .drag-handle{margin-bottom:0.5em;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><circle cx="3" cy="3" r="1.5" fill="indianred"/></svg>') repeat;cursor:grab;width:100%;height:1.2em;border-radius:4px 4px 0 0}
+#mars-search-draggable.dragging .drag-handle{cursor:grabbing}
+#mars-search-draggable .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0 14px}
+#mars-search-draggable .hdr h3{margin:0;font-size:17px;font-weight:700;letter-spacing:0.07em;display:flex;align-items:center;gap:0.5em}
+#mars-search-draggable .hdr .actions{display:flex;gap:10px}
+#mars-search-draggable .hdr button{border:none;padding:6px 10px;border-radius:7px;background:#a23a2b;color:#fff;font:14px monospace;cursor:pointer;transition:background 0.18s}
+#mars-search-draggable .hdr button:hover{background:#d85c38}
+#mars-search-draggable .hdr button:active{background:#c14429}
+#mars-search-draggable .body{padding:10px 14px;overflow:hidden}
+#mars-search-input{width:100%;padding:8px 12px;border-radius:6px;border:1px solid #a23a2b;background:#5e2d2a;color:#fff;font:14px monospace;margin-bottom:10px}
+#mars-search-input:focus{outline:1px solid #d85c38}
+#mars-search-input::placeholder{color:#e4bfbf80}
+#mars-search-results{max-height:320px;overflow-y:auto}
+.mars-search-result{padding:10px;cursor:pointer;border-bottom:1px solid #5e2d2a;transition:background-color 0.2s}
+.mars-search-result:hover{background-color:#5e2d2a}
+.mars-search-result:last-child{border-bottom:none}
+.mars-result-name{font-size:14px;color:#e4bfbf;margin-bottom:4px;font-weight:500}
+.mars-result-address{font-size:12px;color:#e4bfbf80}
+.mars-loading,.mars-no-results{padding:20px;text-align:center;color:#e4bfbf80;font-size:14px}
+.mars-icon{display:inline-block;height:2em;margin-right:1ch;vertical-align:middle}
 `;
 
 GM_addStyle(searchWindowCSS);
@@ -2275,36 +1784,18 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
 (function() {
   // Styles
   const calcCSS = `
-#pixel-regen-calc-modal {
-  position: fixed; right: 120px; top: 120px; z-index: 2147483647;
-  min-width: 300px; max-width: 90vw; background: #3c1e24; color: #fff;
-  border-radius: 9px; box-shadow: 0 8px 32px #2a1113cc; font: 14px/1.5 Roboto Mono, monospace;
-  border: none; padding: 0; display: none; flex-direction: column;
-  will-change: transform;
-}
-#pixel-regen-calc-modal .drag-handle {
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><circle cx="3" cy="3" r="1.5" fill="indianred" /></svg>') repeat;
-  cursor: grab; width: 100%; height: 1.2em; border-radius: 9px 9px 0 0;
-  margin-bottom: 0.5em;
-}
-#pixel-regen-calc-modal.dragging .drag-handle { cursor: grabbing; }
-#pixel-regen-calc-modal .body { padding: 16px 18px 18px 18px; }
-#pixel-regen-calc-modal h3 { margin: 0 0 14px 0; font-size: 17px; }
-#pixel-regen-calc-modal input[type="number"] {
-  width: 90px; padding: 6px 8px; border-radius: 6px;
-  border: 1px solid #a23a2b; background: #5e2d2a;
-  color: #fff; font: 15px monospace; margin-right: 12px;
-}
-#pixel-regen-calc-modal input[type="number"]:focus { outline: 1px solid #d85c38;}
-#pixel-regen-calc-modal .results { margin-top: 10px; color: #e4bfbf; }
-#pixel-regen-calc-modal .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px;}
-#pixel-regen-calc-modal button {
-  border: none; padding: 6px 14px; border-radius: 7px;
-  background: #a23a2b; color: #fff; font: 14px monospace; cursor: pointer;
-  transition: background 0.18s;
-}
-#pixel-regen-calc-modal button:hover { background: #d85c38; }
-#pixel-regen-calc-modal button:active { background: #c14429; }
+#pixel-regen-calc-modal{position:fixed;right:120px;top:120px;z-index:2147483647;min-width:300px;max-width:90vw;background:#3c1e24;color:#fff;border-radius:9px;box-shadow:0 8px 32px #2a1113cc;font:14px/1.5 Roboto Mono,monospace;border:none;padding:0;display:none;flex-direction:column;will-change:transform}
+#pixel-regen-calc-modal .drag-handle{background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="5" height="5"><circle cx="3" cy="3" r="1.5" fill="indianred"/></svg>') repeat;cursor:grab;width:100%;height:1.2em;border-radius:9px 9px 0 0;margin-bottom:0.5em}
+#pixel-regen-calc-modal.dragging .drag-handle{cursor:grabbing}
+#pixel-regen-calc-modal .body{padding:16px 18px 18px 18px}
+#pixel-regen-calc-modal h3{margin:0 0 14px 0;font-size:17px}
+#pixel-regen-calc-modal input[type="number"]{width:90px;padding:6px 8px;border-radius:6px;border:1px solid #a23a2b;background:#5e2d2a;color:#fff;font:15px monospace;margin-right:12px}
+#pixel-regen-calc-modal input[type="number"]:focus{outline:1px solid #d85c38}
+#pixel-regen-calc-modal .results{margin-top:10px;color:#e4bfbf}
+#pixel-regen-calc-modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+#pixel-regen-calc-modal button{border:none;padding:6px 14px;border-radius:7px;background:#a23a2b;color:#fff;font:14px monospace;cursor:pointer;transition:background 0.18s}
+#pixel-regen-calc-modal button:hover{background:#d85c38}
+#pixel-regen-calc-modal button:active{background:#c14429}
 `;
   const styleTag = document.createElement('style');
   styleTag.textContent = calcCSS;
