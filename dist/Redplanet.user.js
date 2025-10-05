@@ -1,22 +1,21 @@
 // ==UserScript==
 // @name         Red Planet
 // @namespace    https://github.com/pixelkat5/
-// @version      0.84.0-3
+// @version      0.84.0-4
 // @description  A userscript to automate and/or enhance the user experience on Wplace.live. Make sure to comply with the site's Terms of Service, and rules! This script is not affiliated with Wplace.live in any way, use at your own risk. This script is not affiliated with TamperMonkey. The author of this userscript is not responsible for any damages, issues, loss of data, or punishment that may occur as a result of using this script. This script is provided "as is" under the MPL-2.0 license. The "Blue Marble" icon is licensed under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication. The image is owned by NASA.
 // @author       SwingTheVine, PixelKat5
 // @license      MPL-2.0
 // @supportURL   https://discord.gg/tpeBPy46hf
-// @homepageURL  https://bluemarble.camilledaguin.fr/
+// @homepageURL  https://discord.gg/tpeBPy46hf
 // @icon         https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/favicon.png
-// @updateURL    https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/Red-planet.user.js
-// @downloadURL  https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/Red-planet.user.js
+// @updateURL    https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/Redplanet.user.js
+// @downloadURL  https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/Redplanet.user.js
 // @match        https://wplace.live/*
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
 // @grant        GM.setValue
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
-// @connect      telemetry.thebluecorner.net
 // @connect      nominatim.openstreetmap.org
 // @resource     CSS-BM-File https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/8d02ac9cbe8f6861248152f2b0d632a0b4a830ee/dist/BlueMarble.user.css
 // ==/UserScript==
@@ -2271,9 +2270,7 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
 })();
-// Pixel Regen Calculator
 (function() {
-  // Styles
   const calcCSS = `
 #pixel-regen-calc-modal {
   position: fixed; right: 120px; top: 120px; z-index: 2147483647;
@@ -2310,10 +2307,9 @@ x.href = "https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..
   styleTag.textContent = calcCSS;
   document.head.appendChild(styleTag);
 
-  // Modal HTML
   const modal = document.createElement('div');
   modal.id = 'pixel-regen-calc-modal';
-modal.innerHTML = `
+  modal.innerHTML = `
 <div class="drag-handle"></div>
 <div class="body">
   <h3>Pixel Regen Calculator</h3>
@@ -2332,63 +2328,87 @@ modal.innerHTML = `
 </div>`;
   document.body.appendChild(modal);
 
-  // Calculation logic
   function showResults(pixels, hasFlag) {
-  pixels = Number(pixels) || 0;
-  if (pixels < 1) pixels = 1;
-  let instant = 0, regen = pixels, remain = pixels;
-  if (hasFlag) {
-    instant = Math.floor(pixels * 0.10);
-    remain = pixels - instant;
-    regen = remain;
-  }
-  const seconds = Math.max(0, regen * 30);
-  const rMins = (seconds/60).toFixed(2);
-  const rHrs = (seconds/3600).toFixed(2);
-  const rDays = (seconds/86400).toFixed(4);
+    pixels = Number(pixels) || 0;
+    if (pixels < 1) pixels = 1;
 
-  let html = '';
-  if (hasFlag) {
-    html += `<div>
-      <b>Flag returnal pixels:</b> <span style="color:#ffe082">${instant.toLocaleString()}</span> pixel${instant!==1?'s':''}<br>
-      <b>Remaining pixels spent:</b> ${remain.toLocaleString()} pixel${remain!==1?'s':''}.
-    </div>`;
-  }
-  html += `
-    <div style="margin-top:7px;">
-      <b>Time needed:</b><br>
-      <span>${rMins} minutes<br>
-      ${rHrs} hours<br>
-      ${rDays} days</span>
-    </div>`;
-  document.getElementById('pixel-regen-calc-results').innerHTML = html;
-}
-const inputEl = modal.querySelector('#pixel-regen-calc-input');
-const flagEl = modal.querySelector('#pixel-regen-calc-flag');
-function updateCalc() {
-  let pixels = Number(inputEl.value);
-  if (!pixels || pixels < 1) pixels = 1;
-  showResults(pixels, flagEl && flagEl.checked);
-}
-inputEl.addEventListener('input', updateCalc);
-if(flagEl) flagEl.addEventListener('change', updateCalc);
+    let instant = 0, regen = pixels, remain = pixels;
+    if (hasFlag) {
+      instant = Math.floor(pixels * 0.10);
+      remain = pixels - instant;
+      regen = remain;
+    }
 
-  // Show/hide logic
+    const seconds = Math.max(0, regen * 30);
+    const rMins = (seconds/60).toFixed(2);
+    const rHrs = (seconds/3600).toFixed(2);
+    const rDays = (seconds/86400).toFixed(4);
+
+    const now = new Date();
+    const completionDate = new Date(now.getTime() + (seconds * 1000));
+
+    const timeOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    };
+    const dateOptions = {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    };
+
+    const completionTime = completionDate.toLocaleTimeString('en-US', timeOptions);
+    const completionDateStr = completionDate.toLocaleDateString('en-US', dateOptions);
+    const isToday = completionDate.toDateString() === now.toDateString();
+
+    let html = '';
+    if (hasFlag) {
+      html += `<div>
+        <b>Flag returnal pixels:</b> <span style="color:#ffe082">${instant.toLocaleString()}</span> pixel${instant!==1?'s':''}<br>
+        <b>Remaining pixels spent:</b> ${remain.toLocaleString()} pixel${remain!==1?'s':''}.
+      </div>`;
+    }
+
+    html += `
+      <div style="margin-top:7px;">
+        <b>Time needed:</b><br>
+        <span>${rMins} minutes<br>
+        ${rHrs} hours<br>
+        ${rDays} days</span>
+      </div>
+      <div style="margin-top:10px; padding-top:10px; border-top:1px solid #5e2d2a;">
+        <b>Completion time:</b><br>
+        <span style="color:#ffe082">${completionTime}</span>
+        ${isToday ? '' : `<br><span style="font-size:12px;">${completionDateStr}</span>`}
+      </div>`;
+
+    document.getElementById('pixel-regen-calc-results').innerHTML = html;
+  }
+
+  const inputEl = modal.querySelector('#pixel-regen-calc-input');
+  const flagEl = modal.querySelector('#pixel-regen-calc-flag');
+  function updateCalc() {
+    let pixels = Number(inputEl.value);
+    if (!pixels || pixels < 1) pixels = 1;
+    showResults(pixels, flagEl && flagEl.checked);
+  }
+  inputEl.addEventListener('input', updateCalc);
+  if(flagEl) flagEl.addEventListener('change', updateCalc);
+
   modal.querySelector('#pixel-regen-calc-close').onclick = ()=> { modal.style.display='none'; };
   function openCalc() {
     modal.style.display = 'flex';
     inputEl.focus();
-    showResults(inputEl.value);
   }
 
-  // Add button to Blue Marble window
   function addButton() {
-    // Attach after "bm-wrench" or "bm-search"
     let refBtn = document.querySelector('#bm-search') || document.querySelector('#bm-wrench');
     if (!refBtn) return setTimeout(addButton, 500);
     let parent = refBtn.parentElement;
-    if (!parent) return;
-    if (document.getElementById('bm-regen-calc')) return;
+    if (!parent || document.getElementById('bm-regen-calc')) return;
 
     const btn = document.createElement('button');
     btn.id = 'bm-regen-calc';
@@ -2401,7 +2421,6 @@ if(flagEl) flagEl.addEventListener('change', updateCalc);
   }
   setTimeout(addButton, 800);
 
-  // Drag logic
   const dragHandle = modal.querySelector('.drag-handle');
   let isDragging = false, dragOriginX = 0, dragOriginY = 0, dragOffsetX = 0, dragOffsetY = 0, animationId = 0;
   function getTransformXY(el) {
@@ -2478,7 +2497,1027 @@ if(flagEl) flagEl.addEventListener('change', updateCalc);
   }, { passive: false });
   document.addEventListener("touchend", stopDrag);
   document.addEventListener("touchcancel", stopDrag);
-
-
 })();
+class DraggableWindow {
+  constructor(options = {}) {
+    this.id = options.id || `draggable-window-${Date.now()}`;
+    this.title = options.title || 'Window';
+    this.iconUrl = options.iconUrl || 'https://raw.githubusercontent.com/pixelkat5/Wplace-Red-planet/refs/heads/main/dist/favicon.png';
+    this.width = options.width || 'min(420px, 90vw)';
+    this.position = options.position || { right: '75px', top: '440px' };
+    this.zIndex = options.zIndex || 2147483646;
+    this.onClose = options.onClose || (() => {});
+
+    this.panel = null;
+    this.bodyElement = null;
+    this.isDragging = false;
+
+    this.createWindow();
+    this.setupDragging();
+  }
+
+  createWindow() {
+    this.panel = document.createElement('div');
+    this.panel.id = this.id;
+    this.panel.style.cssText = `
+      position: fixed;
+      right: ${this.position.right};
+      top: ${this.position.top};
+      z-index: ${this.zIndex};
+      width: ${this.width};
+      max-height: 72vh;
+      background: #3c1e24;
+      color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 32px #2a1113cc;
+      font: 14px/1.4 Roboto Mono, monospace, Arial;
+      display: none;
+      flex-direction: column;
+      min-width: 300px;
+      will-change: transform;
+    `;
+
+    this.panel.innerHTML = `
+      <div class="drag-handle" style="
+        margin-bottom: 0.5em;
+        background: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;5&quot; height=&quot;5&quot;><circle cx=&quot;3&quot; cy=&quot;3&quot; r=&quot;1.5&quot; fill=&quot;indianred&quot; /></svg>') repeat;
+        cursor: grab;
+        width: 100%;
+        height: 1.2em;
+        border-radius: 4px 4px 0 0;
+      "></div>
+      <div class="hdr" style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px 0 14px;
+      ">
+        <h3 style="
+          margin: 0;
+          font-size: 17px;
+          font-weight: 700;
+          letter-spacing: 0.07em;
+          display: flex;
+          align-items: center;
+          gap: 0.5em;
+        ">
+          <img src="${this.iconUrl}" alt="Icon" style="
+            display: inline-block;
+            height: 2em;
+            vertical-align: middle;
+          ">
+          ${this.title}
+        </h3>
+        <div class="actions" style="display: flex; gap: 10px;">
+          <button class="close-btn" style="
+            border: none;
+            padding: 6px 10px;
+            border-radius: 7px;
+            background: #a23a2b;
+            color: #fff;
+            font: 14px monospace;
+            cursor: pointer;
+            transition: background 0.18s;
+          ">Close</button>
+        </div>
+      </div>
+      <div class="body" style="padding: 10px 14px; overflow: auto; max-height: calc(72vh - 56px);"></div>
+    `;
+
+    document.body.appendChild(this.panel);
+    this.bodyElement = this.panel.querySelector('.body');
+
+    this.panel.querySelector('.close-btn').addEventListener('click', () => this.hide());
+
+    const btns = this.panel.querySelectorAll('button');
+    btns.forEach(btn => {
+      btn.addEventListener('mouseenter', () => btn.style.background = '#d85c38');
+      btn.addEventListener('mouseleave', () => btn.style.background = '#a23a2b');
+      btn.addEventListener('mousedown', () => btn.style.background = '#c14429');
+      btn.addEventListener('mouseup', () => btn.style.background = '#d85c38');
+    });
+  }
+
+  setupDragging() {
+    const dragHandle = this.panel.querySelector('.drag-handle');
+    let dragOriginX = 0, dragOriginY = 0, dragOffsetX = 0, dragOffsetY = 0, animationId = 0;
+
+    const getTransformXY = (el) => {
+      const computed = window.getComputedStyle(el).transform;
+      if (computed && computed !== 'none') {
+        const matrix = new DOMMatrix(computed);
+        return [matrix.m41, matrix.m42];
+      }
+      return [0, 0];
+    };
+
+    const animate = () => {
+      if (this.isDragging) {
+        this.panel.style.transform = `translate(${dragOffsetX}px, ${dragOffsetY}px)`;
+        animationId = requestAnimationFrame(animate);
+      }
+    };
+
+    const startDrag = (clientX, clientY) => {
+      this.isDragging = true;
+      this.panel.classList.add('dragging');
+      dragHandle.style.cursor = 'grabbing';
+
+      const rect = this.panel.getBoundingClientRect();
+      let [curX, curY] = getTransformXY(this.panel);
+      dragOriginX = clientX - rect.left;
+      dragOriginY = clientY - rect.top;
+
+      this.panel.style.left = "0px";
+      this.panel.style.top = "0px";
+      this.panel.style.right = "auto";
+      this.panel.style.bottom = "auto";
+      this.panel.style.position = "fixed";
+
+      if (curX === 0 && curY === 0) {
+        dragOffsetX = rect.left;
+        dragOffsetY = rect.top;
+        this.panel.style.transform = `translate(${dragOffsetX}px, ${dragOffsetY}px)`;
+      } else {
+        dragOffsetX = curX;
+        dragOffsetY = curY;
+      }
+
+      document.body.style.userSelect = "none";
+      if (animationId) cancelAnimationFrame(animationId);
+      animate();
+    };
+
+    const stopDrag = () => {
+      this.isDragging = false;
+      if (animationId) cancelAnimationFrame(animationId);
+      document.body.style.userSelect = "";
+      this.panel.classList.remove('dragging');
+      dragHandle.style.cursor = 'grab';
+    };
+
+    const doDrag = (clientX, clientY) => {
+      if (!this.isDragging) return;
+      dragOffsetX = clientX - dragOriginX;
+      dragOffsetY = clientY - dragOriginY;
+    };
+
+    dragHandle.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      startDrag(e.clientX, e.clientY);
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (this.isDragging) doDrag(e.clientX, e.clientY);
+    }, { passive: true });
+
+    document.addEventListener("mouseup", stopDrag);
+
+    dragHandle.addEventListener("touchstart", (e) => {
+      const touch = e?.touches?.[0];
+      if (touch) {
+        startDrag(touch.clientX, touch.clientY);
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    document.addEventListener("touchmove", (e) => {
+      if (this.isDragging) {
+        const touch = e?.touches?.[0];
+        if (!touch) return;
+        doDrag(touch.clientX, touch.clientY);
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    document.addEventListener("touchend", stopDrag);
+    document.addEventListener("touchcancel", stopDrag);
+  }
+
+  setContent(html) {
+    this.bodyElement.innerHTML = html;
+  }
+
+  appendContent(element) {
+    this.bodyElement.appendChild(element);
+  }
+
+  show() {
+    this.panel.style.display = 'flex';
+  }
+
+  hide() {
+    this.panel.style.display = 'none';
+    this.onClose();
+  }
+
+  toggle() {
+    this.panel.style.display = this.panel.style.display === 'none' ? 'flex' : 'none';
+  }
+}
+
+// ============================================
+// Region Downloader
+// ============================================
+
+class RegionDownloader {
+  constructor() {
+    this.TILE_SIZE = 1000;
+    this.window = new DraggableWindow({
+      id: 'region-downloader-window',
+      title: 'Region Downloader',
+      position: { right: '75px', top: '580px' }
+    });
+
+    this.setupUI();
+  }
+
+  setupUI() {
+    this.window.setContent(`
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <label style="display: block; margin-bottom: 4px; color: #e4bfbf; font-size: 13px;">
+            Input Format:
+          </label>
+          <select id="rd-format" style="
+            width: 100%;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #a23a2b;
+            background: #5e2d2a;
+            color: #fff;
+            font: 14px monospace;
+          ">
+            <option value="tile">Tile Coordinates</option>
+            <option value="pixel">Absolute Pixel Coordinates</option>
+            <option value="link">Share Links (lat/lng)</option>
+          </select>
+        </div>
+
+        <div id="rd-inputs"></div>
+
+        <div style="display: flex; gap: 8px;">
+          <button id="rd-calculate" style="
+            flex: 1;
+            border: none;
+            padding: 8px;
+            border-radius: 7px;
+            background: #a23a2b;
+            color: #fff;
+            font: 14px monospace;
+            cursor: pointer;
+            transition: background 0.18s;
+          ">Calculate</button>
+          <button id="rd-download" style="
+            flex: 1;
+            border: none;
+            padding: 8px;
+            border-radius: 7px;
+            background: #a23a2b;
+            color: #fff;
+            font: 14px monospace;
+            cursor: pointer;
+            transition: background 0.18s;
+          " disabled>Download</button>
+        </div>
+
+        <div id="rd-status" style="
+          color: #e4bfbf;
+          font-size: 12px;
+          min-height: 40px;
+          padding: 8px;
+          background: #5e2d2a;
+          border-radius: 6px;
+          border: 1px solid #a23a2b;
+        ">Ready to calculate region...</div>
+      </div>
+    `);
+
+    const formatSelect = this.window.panel.querySelector('#rd-format');
+    const inputsDiv = this.window.panel.querySelector('#rd-inputs');
+    const calcBtn = this.window.panel.querySelector('#rd-calculate');
+    const dlBtn = this.window.panel.querySelector('#rd-download');
+
+    [calcBtn, dlBtn].forEach(btn => {
+      btn.addEventListener('mouseenter', () => { if (!btn.disabled) btn.style.background = '#d85c38'; });
+      btn.addEventListener('mouseleave', () => btn.style.background = '#a23a2b');
+    });
+
+    formatSelect.addEventListener('change', () => this.updateInputFields());
+    calcBtn.addEventListener('click', () => this.calculate());
+    dlBtn.addEventListener('click', () => this.download());
+
+    this.updateInputFields();
+  }
+
+  updateInputFields() {
+    const format = this.window.panel.querySelector('#rd-format').value;
+    const inputsDiv = this.window.panel.querySelector('#rd-inputs');
+
+    const inputStyle = `
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #a23a2b;
+      background: #5e2d2a;
+      color: #fff;
+      font: 14px monospace;
+      margin-top: 4px;
+    `;
+
+    if (format === 'tile') {
+      inputsDiv.innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">Start Tile X</label>
+            <input type="number" id="rd-tile-x1" style="${inputStyle}" placeholder="0-2047">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">Start Tile Y</label>
+            <input type="number" id="rd-tile-y1" style="${inputStyle}" placeholder="0-137">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">Start Px X</label>
+            <input type="number" id="rd-px-x1" style="${inputStyle}" placeholder="0-999">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">Start Px Y</label>
+            <input type="number" id="rd-px-y1" style="${inputStyle}" placeholder="0-999">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">End Tile X</label>
+            <input type="number" id="rd-tile-x2" style="${inputStyle}" placeholder="0-2047">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">End Tile Y</label>
+            <input type="number" id="rd-tile-y2" style="${inputStyle}" placeholder="0-137">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">End Px X</label>
+            <input type="number" id="rd-px-x2" style="${inputStyle}" placeholder="0-999">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">End Px Y</label>
+            <input type="number" id="rd-px-y2" style="${inputStyle}" placeholder="0-999">
+          </div>
+        </div>
+      `;
+    } else if (format === 'pixel') {
+      inputsDiv.innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">Start Pixel X</label>
+            <input type="number" id="rd-abs-x1" style="${inputStyle}" placeholder="0-2047999">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">Start Pixel Y</label>
+            <input type="number" id="rd-abs-y1" style="${inputStyle}" placeholder="0-137999">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">End Pixel X</label>
+            <input type="number" id="rd-abs-x2" style="${inputStyle}" placeholder="0-2047999">
+          </div>
+          <div>
+            <label style="color: #e4bfbf; font-size: 12px;">End Pixel Y</label>
+            <input type="number" id="rd-abs-y2" style="${inputStyle}" placeholder="0-137999">
+          </div>
+        </div>
+      `;
+    } else if (format === 'link') {
+      inputsDiv.innerHTML = `
+        <div>
+          <label style="color: #e4bfbf; font-size: 12px;">Start Position Link</label>
+          <input type="text" id="rd-link1" style="${inputStyle}" placeholder="https://wplace.live/?lat=...&lng=...">
+        </div>
+        <div style="margin-top: 8px;">
+          <label style="color: #e4bfbf; font-size: 12px;">End Position Link</label>
+          <input type="text" id="rd-link2" style="${inputStyle}" placeholder="https://wplace.live/?lat=...&lng=...">
+        </div>
+      `;
+    }
+  }
+
+  parseShareLink(url) {
+    const match = url.match(/lat=([-\d.]+)&lng=([-\d.]+)/);
+    if (match) return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+    return null;
+  }
+
+  latlonToPixel(lat, lng) {
+    const ref1_lat = 42.526335232105254;
+    const ref1_lng = -86.59168978447266;
+    const ref1_pixel_x = 531 * 1000 + 389;
+    const ref1_pixel_y = 756 * 1000 + 206;
+
+    const ref2_lat = 42.507418808693245;
+    const ref2_lng = -86.56584994072264;
+    const ref2_pixel_x = 531 * 1000 + 536;
+    const ref2_pixel_y = 756 * 1000 + 352;
+
+    const pixels_per_lng = (ref2_pixel_x - ref1_pixel_x) / (ref2_lng - ref1_lng);
+    const pixels_per_lat = (ref2_pixel_y - ref1_pixel_y) / (ref2_lat - ref1_lat);
+
+    const pixel_x = Math.round(ref1_pixel_x + (lng - ref1_lng) * pixels_per_lng);
+    const pixel_y = Math.round(ref1_pixel_y + (lat - ref1_lat) * pixels_per_lat);
+
+    return { x: pixel_x, y: pixel_y };
+  }
+
+  calculate() {
+    const format = this.window.panel.querySelector('#rd-format').value;
+    const statusDiv = this.window.panel.querySelector('#rd-status');
+
+    let pixelX1, pixelY1, pixelX2, pixelY2;
+
+    try {
+      if (format === 'tile') {
+        const tileX1 = parseInt(this.window.panel.querySelector('#rd-tile-x1').value);
+        const tileY1 = parseInt(this.window.panel.querySelector('#rd-tile-y1').value);
+        const pxX1 = parseInt(this.window.panel.querySelector('#rd-px-x1').value);
+        const pxY1 = parseInt(this.window.panel.querySelector('#rd-px-y1').value);
+        const tileX2 = parseInt(this.window.panel.querySelector('#rd-tile-x2').value);
+        const tileY2 = parseInt(this.window.panel.querySelector('#rd-tile-y2').value);
+        const pxX2 = parseInt(this.window.panel.querySelector('#rd-px-x2').value);
+        const pxY2 = parseInt(this.window.panel.querySelector('#rd-px-y2').value);
+
+        pixelX1 = tileX1 * this.TILE_SIZE + pxX1;
+        pixelY1 = tileY1 * this.TILE_SIZE + pxY1;
+        pixelX2 = tileX2 * this.TILE_SIZE + pxX2;
+        pixelY2 = tileY2 * this.TILE_SIZE + pxY2;
+      } else if (format === 'pixel') {
+        pixelX1 = parseInt(this.window.panel.querySelector('#rd-abs-x1').value);
+        pixelY1 = parseInt(this.window.panel.querySelector('#rd-abs-y1').value);
+        pixelX2 = parseInt(this.window.panel.querySelector('#rd-abs-x2').value);
+        pixelY2 = parseInt(this.window.panel.querySelector('#rd-abs-y2').value);
+      } else if (format === 'link') {
+        const link1 = this.window.panel.querySelector('#rd-link1').value;
+        const link2 = this.window.panel.querySelector('#rd-link2').value;
+
+        const coords1 = this.parseShareLink(link1);
+        const coords2 = this.parseShareLink(link2);
+
+        if (!coords1 || !coords2) throw new Error('Invalid share links');
+
+        const pixel1 = this.latlonToPixel(coords1.lat, coords1.lng);
+        const pixel2 = this.latlonToPixel(coords2.lat, coords2.lng);
+
+        pixelX1 = pixel1.x;
+        pixelY1 = pixel1.y;
+        pixelX2 = pixel2.x;
+        pixelY2 = pixel2.y;
+      }
+
+      if (pixelX1 > pixelX2) [pixelX1, pixelX2] = [pixelX2, pixelX1];
+      if (pixelY1 > pixelY2) [pixelY1, pixelY2] = [pixelY2, pixelY1];
+
+      const width = pixelX2 - pixelX1 + 1;
+      const height = pixelY2 - pixelY1 + 1;
+
+      const tileX1 = Math.floor(pixelX1 / this.TILE_SIZE);
+      const tileY1 = Math.floor(pixelY1 / this.TILE_SIZE);
+      const tileX2 = Math.floor(pixelX2 / this.TILE_SIZE);
+      const tileY2 = Math.floor(pixelY2 / this.TILE_SIZE);
+
+      const numTiles = (tileX2 - tileX1 + 1) * (tileY2 - tileY1 + 1);
+
+      this.calculatedRegion = { pixelX1, pixelY1, pixelX2, pixelY2, tileX1, tileY1, tileX2, tileY2 };
+
+      statusDiv.innerHTML = `
+        <strong>Region Calculated:</strong><br>
+        Output: ${width}x${height} pixels<br>
+        Tiles needed: ${numTiles}<br>
+        Pixel range: (${pixelX1}, ${pixelY1}) to (${pixelX2}, ${pixelY2})<br>
+        <span style="color: #ffe082;">Ready to download!</span>
+      `;
+
+      this.window.panel.querySelector('#rd-download').disabled = false;
+    } catch (e) {
+      statusDiv.innerHTML = `<span style="color: #ff6b6b;">Error: ${e.message}</span>`;
+      this.window.panel.querySelector('#rd-download').disabled = true;
+    }
+  }
+
+  async download() {
+    const statusDiv = this.window.panel.querySelector('#rd-status');
+    const dlBtn = this.window.panel.querySelector('#rd-download');
+
+    if (!this.calculatedRegion) {
+      statusDiv.innerHTML = '<span style="color: #ff6b6b;">Please calculate region first!</span>';
+      return;
+    }
+
+    dlBtn.disabled = true;
+    statusDiv.innerHTML = 'Downloading tiles...<br>This may take a while.';
+
+    const { pixelX1, pixelY1, pixelX2, pixelY2, tileX1, tileY1, tileX2, tileY2 } = this.calculatedRegion;
+
+    try {
+      const canvas = document.createElement('canvas');
+      const width = pixelX2 - pixelX1 + 1;
+      const height = pixelY2 - pixelY1 + 1;
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      let downloaded = 0;
+      const totalTiles = (tileX2 - tileX1 + 1) * (tileY2 - tileY1 + 1);
+
+      for (let tileX = tileX1; tileX <= tileX2; tileX++) {
+        for (let tileY = tileY1; tileY <= tileY2; tileY++) {
+          const url = `https://backend.wplace.live/files/s0/tiles/${tileX}/${tileY}.png`;
+
+          try {
+            const response = await fetch(url);
+            if (!response.ok) continue;
+
+            const blob = await response.blob();
+            const img = await createImageBitmap(blob);
+
+            const tilePixelX1 = tileX * this.TILE_SIZE;
+            const tilePixelY1 = tileY * this.TILE_SIZE;
+
+            const cropLeft = Math.max(0, pixelX1 - tilePixelX1);
+            const cropTop = Math.max(0, pixelY1 - tilePixelY1);
+            const cropRight = Math.min(this.TILE_SIZE, pixelX2 - tilePixelX1 + 1);
+            const cropBottom = Math.min(this.TILE_SIZE, pixelY2 - tilePixelY1 + 1);
+
+            const pasteX = tilePixelX1 + cropLeft - pixelX1;
+            const pasteY = tilePixelY1 + cropTop - pixelY1;
+
+            ctx.drawImage(img, cropLeft, cropTop, cropRight - cropLeft, cropBottom - cropTop,
+                              pasteX, pasteY, cropRight - cropLeft, cropBottom - cropTop);
+
+            downloaded++;
+            statusDiv.innerHTML = `Downloading: ${downloaded}/${totalTiles} tiles...`;
+          } catch (e) {
+            console.error(`Failed to download tile (${tileX}, ${tileY}):`, e);
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `wplace_region_${pixelX1}_${pixelY1}_to_${pixelX2}_${pixelY2}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        statusDiv.innerHTML = `<span style="color: #90ee90;">Download complete! ${width}x${height} pixels saved.</span>`;
+        dlBtn.disabled = false;
+      }, 'image/png');
+
+    } catch (e) {
+      statusDiv.innerHTML = `<span style="color: #ff6b6b;">Error during download: ${e.message}</span>`;
+      dlBtn.disabled = false;
+    }
+  }
+
+  show() {
+    this.window.show();
+  }
+}
+
+function addRegionDownloaderButton() {
+  const refBtn = document.querySelector('#bm-search');
+  if (!refBtn) return setTimeout(addRegionDownloaderButton, 500);
+
+  const parent = refBtn.parentElement;
+  if (!parent || document.getElementById('bm-region-dl')) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'bm-region-dl';
+  btn.className = "bm-D";
+  btn.title = "Open Region Downloader";
+  btn.innerHTML = "📥";
+  btn.addEventListener('click', () => {
+    if (!window.regionDownloader) {
+      window.regionDownloader = new RegionDownloader();
+    }
+    window.regionDownloader.show();
+  });
+
+  parent.insertBefore(btn, refBtn.nextSibling);
+}
+
+setTimeout(addRegionDownloaderButton, 1000);
+
+// ============================================
+// Bookmark Manager
+// ============================================
+
+class BookmarkManager {
+  constructor() {
+    this.STORAGE_KEY = 'wplace_custom_bookmarks';
+    this.bookmarks = this.loadBookmarks();
+    this.currentCoords = null;
+
+    this.window = new DraggableWindow({
+      id: 'bookmark-manager-window',
+      title: 'Custom Bookmarks',
+      position: { right: '75px', top: '720px' },
+      width: 'min(450px, 90vw)'
+    });
+
+    this.setupUI();
+    this.startCoordMonitor();
+  }
+
+  loadBookmarks() {
+    try {
+      return JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
+    } catch (e) {
+      console.warn('Failed to parse bookmarks from storage, resetting.', e);
+      return [];
+    }
+  }
+
+  saveBookmarks() {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.bookmarks));
+    } catch (e) {
+      console.error('Failed to save bookmarks:', e);
+    }
+  }
+
+  startCoordMonitor() {
+    const self = this;
+    setInterval(() => {
+      const coordSpan = document.querySelector('#bm-h');
+      if (!coordSpan) return;
+
+      const match = coordSpan.textContent.match(/Tl X: ([-\d]+), Tl Y: ([-\d]+), Px X: ([-\d]+), Px Y: ([-\d]+)/);
+      if (match) {
+        self.currentCoords = {
+          tileX: parseInt(match[1], 10),
+          tileY: parseInt(match[2], 10),
+          pixelX: parseInt(match[3], 10),
+          pixelY: parseInt(match[4], 10)
+        };
+
+        const statusDiv = self.window.panel ? self.window.panel.querySelector('#bm-current-coords') : null;
+        if (statusDiv && self.window.panel.style.display !== 'none') {
+          statusDiv.innerHTML = `Current: Tile (${self.currentCoords.tileX}, ${self.currentCoords.tileY}) Pixel (${self.currentCoords.pixelX}, ${self.currentCoords.pixelY})`;
+          statusDiv.style.color = '#ffe082';
+        }
+      }
+    }, 500);
+  }
+
+  coordsToAbsolutePixel(tileX, tileY, pixelX, pixelY) {
+    const absX = tileX * 1000 + pixelX;
+    const absY = tileY * 1000 + pixelY;
+    return { x: absX, y: absY };
+  }
+
+  pixelToLatLng(pixelX, pixelY) {
+    const ref1_lat = 42.526335232105254;
+    const ref1_lng = -86.59168978447266;
+    const ref1_pixel_x = 531 * 1000 + 389;
+    const ref1_pixel_y = 756 * 1000 + 206;
+
+    const ref2_lat = 42.507418808693245;
+    const ref2_lng = -86.56584994072264;
+    const ref2_pixel_x = 531 * 1000 + 536;
+    const ref2_pixel_y = 756 * 1000 + 352;
+
+    const pixels_per_lng = (ref2_pixel_x - ref1_pixel_x) / (ref2_lng - ref1_lng);
+    const pixels_per_lat = (ref2_pixel_y - ref1_pixel_y) / (ref2_lat - ref1_lat);
+
+    const lng = ref1_lng + (pixelX - ref1_pixel_x) / pixels_per_lng;
+    const lat = ref1_lat + (pixelY - ref1_pixel_y) / pixels_per_lat;
+
+    return { lat, lng };
+  }
+
+  setupUI() {
+    const self = this;
+    this.window.setContent(`
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 8px; align-items: flex-end;">
+          <div style="flex: 1;">
+            <label style="display: block; margin-bottom: 4px; color: #e4bfbf; font-size: 12px;">
+              Bookmark Name
+            </label>
+            <input type="text" id="bm-name-input" placeholder="My favorite spot..." style="
+              width: 100%;
+              padding: 6px 8px;
+              border-radius: 6px;
+              border: 1px solid #a23a2b;
+              background: #5e2d2a;
+              color: #fff;
+              font: 14px monospace;
+            ">
+          </div>
+          <button id="bm-add-btn" style="
+            border: none;
+            padding: 8px 12px;
+            border-radius: 7px;
+            background: #a23a2b;
+            color: #fff;
+            font: 14px monospace;
+            cursor: pointer;
+            transition: background 0.18s;
+            white-space: nowrap;
+          ">+ Add Current</button>
+        </div>
+
+        <div id="bm-current-coords" style="
+          font-size: 11px;
+          color: #e4bfbf80;
+          padding: 6px;
+          background: #5e2d2a;
+          border-radius: 4px;
+          border: 1px solid #a23a2b;
+        ">Click on the canvas to get coordinates...</div>
+
+        <div style="
+          max-height: 300px;
+          overflow-y: auto;
+          border: 1px solid #5e2d2a;
+          border-radius: 6px;
+          background: #5e2d2a;
+        ">
+          <div id="bm-list" style="padding: 4px;"></div>
+        </div>
+
+        <div style="display: flex; gap: 8px; font-size: 12px; color: #e4bfbf;">
+          <button id="bm-export-btn" style="
+            flex: 1;
+            border: none;
+            padding: 6px;
+            border-radius: 6px;
+            background: #5e2d2a;
+            color: #e4bfbf;
+            font: 12px monospace;
+            cursor: pointer;
+            border: 1px solid #a23a2b;
+          ">Export JSON</button>
+          <button id="bm-import-btn" style="
+            flex: 1;
+            border: none;
+            padding: 6px;
+            border-radius: 6px;
+            background: #5e2d2a;
+            color: #e4bfbf;
+            font: 12px monospace;
+            cursor: pointer;
+            border: 1px solid #a23a2b;
+          ">Import JSON</button>
+          <button id="bm-clear-btn" style="
+            flex: 1;
+            border: none;
+            padding: 6px;
+            border-radius: 6px;
+            background: #5e2d2a;
+            color: #e4bfbf;
+            font: 12px monospace;
+            cursor: pointer;
+            border: 1px solid #a23a2b;
+          ">Clear All</button>
+        </div>
+      </div>
+    `);
+
+    const addBtn = this.window.panel.querySelector('#bm-add-btn');
+    const nameInput = this.window.panel.querySelector('#bm-name-input');
+    const exportBtn = this.window.panel.querySelector('#bm-export-btn');
+    const importBtn = this.window.panel.querySelector('#bm-import-btn');
+    const clearBtn = this.window.panel.querySelector('#bm-clear-btn');
+
+    [addBtn, exportBtn, importBtn, clearBtn].forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        btn.style.background = btn === addBtn ? '#d85c38' : '#a23a2b';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.background = btn === addBtn ? '#a23a2b' : '#5e2d2a';
+      });
+    });
+
+    addBtn.addEventListener('click', () => self.addBookmark(nameInput.value));
+    exportBtn.addEventListener('click', () => self.exportBookmarks());
+    importBtn.addEventListener('click', () => self.importBookmarks());
+    clearBtn.addEventListener('click', () => self.clearAllBookmarks());
+
+    nameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') self.addBookmark(nameInput.value);
+    });
+
+    this.renderList();
+  }
+
+  addBookmark(name) {
+    if (!this.currentCoords) {
+      alert('No coordinates available. Click on the canvas first!');
+      return;
+    }
+
+    if (!name || name.trim() === '') {
+      name = `Bookmark ${this.bookmarks.length + 1}`;
+    }
+
+    const bookmark = {
+      id: Date.now(),
+      name: name.trim(),
+      tileX: this.currentCoords.tileX,
+      tileY: this.currentCoords.tileY,
+      pixelX: this.currentCoords.pixelX,
+      pixelY: this.currentCoords.pixelY,
+      createdAt: new Date().toISOString()
+    };
+
+    this.bookmarks.unshift(bookmark);
+    this.saveBookmarks();
+    this.renderList();
+
+    const input = this.window.panel.querySelector('#bm-name-input');
+    if (input) input.value = '';
+  }
+
+  deleteBookmark(id) {
+    if (!confirm('Delete this bookmark?')) return;
+
+    this.bookmarks = this.bookmarks.filter(b => b.id !== id);
+    this.saveBookmarks();
+    this.renderList();
+  }
+
+  goToBookmark(bookmark) {
+    const absPixel = this.coordsToAbsolutePixel(
+      bookmark.tileX,
+      bookmark.tileY,
+      bookmark.pixelX,
+      bookmark.pixelY
+    );
+
+    const latLng = this.pixelToLatLng(absPixel.x, absPixel.y);
+    const zoom = 14.62;
+    const shareUrl = `https://wplace.live/?lat=${latLng.lat}&lng=${latLng.lng}&zoom=${zoom}`;
+    window.location.href = shareUrl;
+  }
+
+  renameBookmark(bookmark) {
+    const newName = prompt('Enter new name for bookmark:', bookmark.name);
+    if (newName === null || newName.trim() === '') return;
+
+    const bookmarkToUpdate = this.bookmarks.find(b => b.id === bookmark.id);
+    if (bookmarkToUpdate) {
+      bookmarkToUpdate.name = newName.trim();
+      this.saveBookmarks();
+      this.renderList();
+    }
+  }
+
+  renderList() {
+    const listDiv = this.window.panel.querySelector('#bm-list');
+
+    if (!this.bookmarks || this.bookmarks.length === 0) {
+      listDiv.innerHTML = '<div style="padding: 20px; text-align: center; color: #e4bfbf80; font-size: 13px;">No bookmarks yet. Click canvas, then add!</div>';
+      return;
+    }
+
+    listDiv.innerHTML = '';
+
+    this.bookmarks.forEach(bookmark => {
+      const item = document.createElement('div');
+      item.style.cssText = `
+        padding: 8px; margin: 4px 0; background: #3c1e24; border-radius: 6px;
+        display: flex; justify-content: space-between; align-items: center; gap: 8px;
+        border: 1px solid #5e2d2a;
+      `;
+
+      const date = new Date(bookmark.createdAt).toLocaleDateString();
+
+      item.innerHTML = `
+        <div style="flex: 1; cursor: pointer; min-width: 0;" class="bm-goto">
+          <div style="color: #e4bfbf; font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" class="bm-title">
+            ${bookmark.name}
+          </div>
+          <div style="color: #e4bfbf80; font-size: 11px; margin-top: 2px;">
+            Tile (${bookmark.tileX}, ${bookmark.tileY}) Px (${bookmark.pixelX}, ${bookmark.pixelY}) • ${date}
+          </div>
+        </div>
+        <button class="bm-delete" style="
+          border: none; padding: 4px 8px; border-radius: 4px;
+          background: #a23a2b; color: #fff; font-size: 12px;
+          cursor: pointer; flex-shrink: 0;
+        ">Delete</button>
+      `;
+
+      const gotoDiv = item.querySelector('.bm-goto');
+      const titleDiv = item.querySelector('.bm-title');
+      const deleteBtn = item.querySelector('.bm-delete');
+
+      gotoDiv.addEventListener('click', () => this.goToBookmark(bookmark));
+
+      titleDiv.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        this.renameBookmark(bookmark);
+      });
+
+      gotoDiv.addEventListener('mouseenter', () => item.style.background = '#5e2d2a');
+      gotoDiv.addEventListener('mouseleave', () => item.style.background = '#3c1e24');
+
+      deleteBtn.addEventListener('mouseenter', () => deleteBtn.style.background = '#d85c38');
+      deleteBtn.addEventListener('mouseleave', () => deleteBtn.style.background = '#a23a2b');
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.deleteBookmark(bookmark.id);
+      });
+
+      listDiv.appendChild(item);
+    });
+  }
+
+  exportBookmarks() {
+    try {
+      const data = JSON.stringify(this.bookmarks, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `wplace_bookmarks_${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Failed to export bookmarks:', e);
+      alert(`Failed to export bookmarks: ${e.message}`);
+    }
+  }
+
+  importBookmarks() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const imported = JSON.parse(ev.target.result);
+          if (!Array.isArray(imported)) {
+            alert('Invalid bookmark file format');
+            return;
+          }
+
+          const existingIds = new Set(this.bookmarks.map(b => b.id));
+          const newBookmarks = imported.filter(b => !existingIds.has(b.id));
+
+          this.bookmarks = [...this.bookmarks, ...newBookmarks];
+          this.saveBookmarks();
+          this.renderList();
+
+          alert(`Imported ${newBookmarks.length} new bookmarks!`);
+        } catch (err) {
+          alert(`Failed to import bookmarks: ${err.message}`);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    input.click();
+  }
+
+  clearAllBookmarks() {
+    if (!confirm(`Delete all ${this.bookmarks.length} bookmarks? This cannot be undone!`)) return;
+
+    this.bookmarks = [];
+    this.saveBookmarks();
+    this.renderList();
+  }
+
+  show() {
+    this.window.show();
+  }
+}
+
+function addBookmarkButton() {
+  const refBtn = document.querySelector('#bm-region-dl') || document.querySelector('#bm-search');
+  if (!refBtn) return setTimeout(addBookmarkButton, 500);
+
+  const parent = refBtn.parentElement;
+  if (!parent || document.getElementById('bm-bookmark-mgr')) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'bm-bookmark-mgr';
+  btn.className = "bm-D";
+  btn.title = "Open Bookmark Manager";
+  btn.innerHTML = "⭐";
+  btn.addEventListener('click', () => {
+    if (!window.bookmarkManager) {
+      window.bookmarkManager = new BookmarkManager();
+    }
+    window.bookmarkManager.show();
+  });
+
+  parent.insertBefore(btn, refBtn.nextSibling);
+}
+
+setTimeout(addBookmarkButton, 1000);
+
 })();
